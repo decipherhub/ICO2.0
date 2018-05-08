@@ -19,5 +19,5 @@ module.exports = async function(deployer, network, accounts) {
     const _token = await ERC20.deployed();
     const _teamWallet = accounts[4];
     const _membersAddress = await Members.deployed();
-    deployer.deploy(Fund, _token, _teamWallet, _membersAddress, {from: accounts[0], gasLimit: 50000000});
+    deployer.deploy(Fund, _token.address, _teamWallet, _membersAddress.address, {from: accounts[0], gasLimit: 50000000});
 };

@@ -12,7 +12,12 @@ contract TapVoting is BaseVoting {
         address _fundAddress,
         address _vestingTokens,
         address _membersAddress
-        ) BaseVoting(_votingName, _tokenAddress, _fundAddress, _vestingTokens, _membersAddress) public {
+        )
+        BaseVoting( _votingName,
+                    _tokenAddress,
+                    _fundAddress,
+                    _vestingTokens, 
+                    membersAddress) public {
     }
 
     /* Voting Period Function

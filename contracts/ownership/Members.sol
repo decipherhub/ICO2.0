@@ -24,9 +24,9 @@ contract Members {
     }
 
     constructor() public {
-        owner_ = msg.sender;
-        emit CreateOwnership(owner_);
-        memberLevel[owner_] = MEMBER_LEVEL.OWNER;
+            owner_ = msg.sender;
+            emit CreateOwnership(owner_);
+            memberLevel[owner_] = MEMBER_LEVEL.OWNER;
     }
 
     function owner() public view 
@@ -46,7 +46,7 @@ contract Members {
 
     function transferOwnership(address newOwner) public
         onlyOwner {
-        require(newOwner != 0x0);
+            require(newOwner != 0x0);
             require(isDeveloper(newOwner), "Not Developers");
             emit OwnershipTransferred(owner_, newOwner);
             memberLevel[newOwner] = MEMBER_LEVEL.OWNER;
@@ -54,7 +54,7 @@ contract Members {
             owner_ = newOwner;
     }
 
-    function enroll_presale(address addr) public 
+    function enroll_presale(address addr) public
         only(crowdsale_address) { // FIXIT: is it possible?
             require(addr != 0x0);
             require(!isLockedGroup(addr), "It is already in locked group");
@@ -62,7 +62,7 @@ contract Members {
             memberLevel[addr] = MEMBER_LEVEL.LOCKED;
     }
 
-    function enroll_developer(address dev_addr) public 
+    function enroll_developer(address dev_addr) public
         onlyOwner {
             require(dev_addr != 0x0);
             require(!isDeveloper(dev_addr), "It is developer");
@@ -70,7 +70,7 @@ contract Members {
             memberLevel[dev_addr] = MEMBER_LEVEL.DEV;
     }
 
-    function delete_developer(address dev_addr) public 
+    function delete_developer(address dev_addr) public
         onlyOwner {
             require(dev_addr != 0x0);
             require(dev_addr != owner_, "Must not be self-destruct");

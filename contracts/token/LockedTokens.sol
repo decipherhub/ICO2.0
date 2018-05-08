@@ -36,15 +36,18 @@ contract LockedTokens is Param {
      * @param _token ERC20 compatible token contract
      * @param _crowdsaleAddress Crowdsale contract address
      */
-    constructor(address _token, address _crowdsaleAddress, address _fundAddress) public {
-        require(_token != 0x0);
-        require(_crowdsaleAddress != 0x0);
-        require(_fundAddress != 0x0);
+    constructor(
+        address _token,
+        address _crowdsaleAddress,
+        address _fundAddress) public {
+            require(_token != 0x0);
+            require(_crowdsaleAddress != 0x0);
+            require(_fundAddress != 0x0);
 
-        mToken = IERC20(_token);
-        mCrowdsaleAddress = _crowdsaleAddress;
-        mFund = Fund(_fundAddress);
-        workable = true;
+            mToken = IERC20(_token);
+            mCrowdsaleAddress = _crowdsaleAddress;
+            mFund = Fund(_fundAddress);
+            workable = true;
     }
 
     /**

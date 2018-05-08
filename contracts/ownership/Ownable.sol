@@ -31,11 +31,13 @@ contract Ownable {
         _;
     }
 
-    function isOwner(address account) view public returns(bool) {
-        return (account == members.owner());
+    function isOwner(address account) view public
+        returns(bool) {
+            return (account == members.owner());
     }
     
-    function isDeveloper(address account) view public returns(bool) {
-        return members.isDeveloper(account);
+    function isDeveloper(address account) view public
+        returns(bool) {
+            return members.isDeveloper(account);
     }
 }

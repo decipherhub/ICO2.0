@@ -12,7 +12,12 @@ contract RefundVoting is BaseVoting {
         address _fundAddress,
         address _vestingTokens,
         address _membersAddress
-        ) BaseVoting(_votingName, _tokenAddress, _fundAddress, _vestingTokens, _membersAddress) public {
+        )
+        BaseVoting( _votingName,
+                    _tokenAddress,
+                    _fundAddress,
+                    _vestingTokens, 
+                    membersAddress) public {
     }
     
     function canDiscard() public view
@@ -53,11 +58,11 @@ contract RefundVoting is BaseVoting {
         period(VOTE_PERIOD.CLOSED) 
         available
         returns (bool) { 
-        //TODO: finalize the refund voting. call lockFund() if refund has approved
-        RESULT_STATE result = RESULT_STATE.NONE;
+            //TODO: finalize the refund voting. call lockFund() if refund has approved
+            RESULT_STATE result = RESULT_STATE.NONE;
 
 
-        emit FinalizeVote(msg.sender, now);    
+            emit FinalizeVote(msg.sender, now);    
     }
     
     function discard() public

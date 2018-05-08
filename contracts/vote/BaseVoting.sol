@@ -78,8 +78,7 @@ contract BaseVoting is Ownable, Param {
         address _fundAddress,
         address _vestingTokensAddress,
         address _membersAddress
-        ) 
-        public
+        ) public
         Ownable(_membersAddress) {
             require(_tokenAddress != address(0));
             require(_fundAddress != address(0));
@@ -177,14 +176,13 @@ contract BaseVoting is Ownable, Param {
         address account,
         VOTE_STATE a,
         uint256 b,
-        bool c)
-            public 
-            available
-            returns(bool) {
-                if(a != VOTE_STATE.NONE) {party_dict[account].state = a;}
-                if(b != 0) {party_dict[account].power = b;}
-                if(c != false) {party_dict[account].isReceivedIncentive = true;}
-                return true;
+        bool c) public 
+        available
+        returns(bool) {
+            if(a != VOTE_STATE.NONE) {party_dict[account].state = a;}
+            if(b != 0) {party_dict[account].power = b;}
+            if(c != false) {party_dict[account].isReceivedIncentive = true;}
+            return true;
     }
 
     /* Voting Period Function

@@ -58,18 +58,19 @@ contract VotingFactory is Ownable, Param {
         address _fundAddress,
         address _vestingTokensAddress,
         address _membersAddress
-        ) public Ownable(_membersAddress) {
-        require(_tokenAddress != address(0));
-        require(_fundAddress != address(0));
-        require(_membersAddress != address(0));
-        require(_vestingTokensAddress != address(0));
+        ) public
+        Ownable(_membersAddress) {
+            require(_tokenAddress != address(0));
+            require(_fundAddress != address(0));
+            require(_membersAddress != address(0));
+            require(_vestingTokensAddress != address(0));
 
-        mToken = IERC20(_tokenAddress);
-        mFund = Fund(_fundAddress);
-        mTapRound = 1;
-        mRefundRound = 1;
-        mVestingTokens = VestingTokens(_vestingTokensAddress);
-        mFund.setVotingFactoryAddress(address(this));
+            mToken = IERC20(_tokenAddress);
+            mFund = Fund(_fundAddress);
+            mTapRound = 1;
+            mRefundRound = 1;
+            mVestingTokens = VestingTokens(_vestingTokensAddress);
+            mFund.setVotingFactoryAddress(address(this));
     }
     /* Fallback Function */
     function () external {}
@@ -82,10 +83,8 @@ contract VotingFactory is Ownable, Param {
     //TODO: chop it
     function newTapVoting(
         string _votingName,
-        uint256 _term
-    )   public
-        onlyDevelopers
-        allset
+        uint256 _term) public
+        onlyDevelopers allset
         returns(address) {
             require(!switch__isTapVotingOpened, "other tap voting is already exists.");
 
@@ -99,8 +98,7 @@ contract VotingFactory is Ownable, Param {
 
     function newRefundVoting(
         string _votingName,
-        uint256 _term
-    )   public
+        uint256 _term) public
         allset
         returns(address) {
            
@@ -124,8 +122,7 @@ contract VotingFactory is Ownable, Param {
     //TODO: chop the destroyVoting into Tap and Refund voting
     function destroyVoting(
         address _vote_account,
-        string _memo
-        ) public
+        string _memo) public
         allset
         returns(bool) {
             require(isVoteExist(_vote_account));
