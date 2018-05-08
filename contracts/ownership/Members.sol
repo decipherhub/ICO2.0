@@ -29,19 +29,19 @@ contract Members {
             memberLevel[owner_] = MEMBER_LEVEL.OWNER;
     }
 
-    function owner() public view 
+    function owner() public view
         returns(address) {
             return owner_;
     }
 
     function isLockedGroup(address addr) public view
         returns(bool) {
-            return uint(memberLevel[addr]) > uint(MEMBER_LEVEL.NONE);
+            return (uint(memberLevel[addr]) > uint(MEMBER_LEVEL.NONE));
     }
 
     function isDeveloper(address addr) public view
         returns(bool) {
-            return uint(memberLevel[addr]) > uint(MEMBER_LEVEL.LOCKED);
+            return (uint(memberLevel[addr]) > uint(MEMBER_LEVEL.LOCKED));
     }
 
     function transferOwnership(address newOwner) public
@@ -55,7 +55,8 @@ contract Members {
     }
 
     function enroll_presale(address addr) public
-        only(crowdsale_address) { // FIXIT: is it possible?
+        //only(crowdsale_address) { // FIXIT: is it possible?
+        {
             require(addr != 0x0);
             require(!isLockedGroup(addr), "It is already in locked group");
             emit EnrollLockedGroup(msg.sender, addr);

@@ -30,12 +30,14 @@ contract VotingFactory is Ownable, Param {
     mapping(address => voteInfo) mVoteList; // {vote name => {voteAddress, voteType}}
     TapVoting public mTapVoting;
     RefundVoting public mRefundVoting;
+    TapVoting public NULL_TapVoting;
+    RefundVoting public NULL_RefundVoting;
     uint256 public mTapRound;
     uint256 public mRefundRound;
     VestingTokens public mVestingTokens;
-    
+
     bool public switch__isTapVotingOpened = false;
-  
+
 
     /* Events */
     event CreateTapVote(address indexed vote_account, VOTE_TYPE indexed type_, uint256 indexed round, string name);
@@ -71,6 +73,8 @@ contract VotingFactory is Ownable, Param {
             mRefundRound = 1;
             mVestingTokens = VestingTokens(_vestingTokensAddress);
             mFund.setVotingFactoryAddress(address(this));
+            NULL_TapVoting = new TapVoting("null", 0x1, 0x1, 0x1, _membersAddress);
+            NULL_RefundVoting = new RefundVoting("null", 0x1, 0x1, 0x1, _membersAddress);
     }
     /* Fallback Function */
     function () external {}
@@ -81,10 +85,9 @@ contract VotingFactory is Ownable, Param {
     }
 
     //TODO: chop it
-    function newTapVoting(
-        string _votingName,
-        uint256 _term) public
-        onlyDevelopers allset
+    function newTapVoting(string _votingName) public
+        onlyDevelopers
+        allset
         returns(address) {
             require(!switch__isTapVotingOpened, "other tap voting is already exists.");
 
@@ -96,12 +99,10 @@ contract VotingFactory is Ownable, Param {
             return address(mTapVoting);
     }
 
-    function newRefundVoting(
-        string _votingName,
-        uint256 _term) public
+    function newRefundVoting(string _votingName) public
         allset
         returns(address) {
-           
+
             if(address(mRefundVoting) == address(0)) { // first time of creating refund vote
                 mRefundVoting = new RefundVoting(_votingName, address(mToken), address(mFund), address(mVestingTokens), address(members));
                 emit CreateRefundVote(address(mRefundVoting), VOTE_TYPE.REFUND, mRefundRound, _votingName);
@@ -131,14 +132,14 @@ contract VotingFactory is Ownable, Param {
                 if(address(mRefundVoting) != _vote_account) { revert("input voting address and current address are not equal."); }
                 if(!mRefundVoting.discard()) { revert("This refund voting cannot be discarded."); }
                 emit DiscardRefundVote(_vote_account, VOTE_TYPE.REFUND, mVoteList[_vote_account].round, _memo); // TODO: _vote_name is not in mVoteList.
-                mRefundVoting = 0x0; // FIXIT: how to initialize NULL
-                
+                mRefundVoting = NULL_RefundVoting; // FIXIT: how to initialize NULL
+
             }
             else if(mVoteList[_vote_account].voteType == VOTE_TYPE.TAP && switch__isTapVotingOpened == true) {
                 if(address(mTapVoting) != _vote_account) { revert("input voting address and current address are not equal."); }
                 if(!mTapVoting.discard()) { revert("This tap voting cannot be discarded."); }
                 emit DiscardTapVote(_vote_account, VOTE_TYPE.TAP, mVoteList[_vote_account].round, _memo);
-                mTapVoting = 0x0; // FIXIT: how to initialize NULL
+                mTapVoting = NULL_TapVoting; // FIXIT: how to initialize NULL
                 switch__isTapVotingOpened = false;
             }
             else if(mVoteList[_vote_account].voteType == VOTE_TYPE.NONE) {
@@ -151,7 +152,7 @@ contract VotingFactory is Ownable, Param {
         allset
         returns(bool) {
             destroyVoting(address(mRefundVoting), "refresh by refreshRefundVoting");
-            newRefundVoting("refund voting", REFRESH_TERM);  
+            newRefundVoting("refund voting");
             return true;
     }
 }

@@ -62,21 +62,20 @@ contract Param {
     uint256 public constant REFRESH_TERM = 4 weeks; // refresh term of refund voting
     uint256 public constant MIN_VOTABLE_TOKEN_PER = 1; // 0.01% (max: 10000)
         //IMPORTANT: need reviewing
-    function MIN_VOTE_PERCENT(
-        uint256 P_S,
-        uint256 p_M,
-        uint256 p_m,
-        uint256 N_M,
-        uint256 N_m) internal pure
-        returns(uint256 X) {
-            //TODO: X ~ N(m, variance) => X-m/std ~ N(0, 1)
-            uint256 UINT_100 = 100;
-            uint256 m = (P_S.mul(p_M).add((UINT_100.sub(P_S)).mul(p_m))).div(10000); 
-            uint256 variance = P_S.mul(P_S).mul(p_M).mul(UINT_100.sub(p_M)).div(N_M);
-            variance = variance.add((UINT_100.sub(P_S)).mul(UINT_100.sub(P_S)).mul(p_m).mul(UINT_100.sub(p_m)).div(N_m));
-            uint256 std = variance.div(100000000).sqrt();
-            //If you wanna the voting rate 80%, P(Z>= -0.842) = 0.8
-            X = m.sub(std.mul(842).div(1000));
-            return X;
-    }
+        function MIN_VOTE_PERCENT(
+            uint256 P_S,
+            uint256 p_M,
+            uint256 p_m,
+            uint256 N_M,
+            uint256 N_m) internal pure
+            returns(uint256 X) {
+                //TODO: X ~ N(m, variance) => X-m/std ~ N(0, 1)
+                /*uint256 m = (P_S.mul(p_M).add((uint256(100).sub(P_S)).mul(p_m))).div(uint256(10000));
+                uint256 variance = P_S.mul(P_S).mul(p_M).mul(uint256(100).sub(p_M)).div(N_M);
+                variance = variance.add( (uint256(100).sub(P_S)).mul(uint256(100).sub(P_S)).mul(p_m).mul(uint256(100).sub(p_m)).div(N_m) );
+                uint256 std = Sqrt.sqrt(variance.div(uint256(100000000)));
+                //If you wanna the voting rate 80%, P(Z>= -0.842) = 0.8
+                X = m.sub(std.mul(842).div(1000));*/
+                return X;
+        }
 }

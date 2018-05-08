@@ -34,21 +34,25 @@ contract LockedTokens is Param {
     /**
      * @dev LockedTokens constructor
      * @param _token ERC20 compatible token contract
-     * @param _crowdsaleAddress Crowdsale contract address
+     * @param _fundAddress Fund contract address
      */
     constructor(
         address _token,
-        address _crowdsaleAddress,
         address _fundAddress) public {
             require(_token != 0x0);
-            require(_crowdsaleAddress != 0x0);
             require(_fundAddress != 0x0);
 
             mToken = IERC20(_token);
-            mCrowdsaleAddress = _crowdsaleAddress;
             mFund = Fund(_fundAddress);
             workable = true;
     }
+
+    function setCrowdsaleAddress(address _crowdsaleAddress) public
+        returns(bool) {
+            require(mCrowdsaleAddress == 0x0);
+            mCrowdsaleAddress = _crowdsaleAddress;
+            return true;
+        }
 
     /**
      * @dev Functions locks tokens
@@ -59,10 +63,10 @@ contract LockedTokens is Param {
     function addTokens(
         address _to,
         uint256 _amount,
-        uint256 _lockEndTime) internal 
+        uint256 _lockEndTime) internal
         returns(bool) {
             require(msg.sender == mCrowdsaleAddress);
-            
+
             mWalletTokens[_to].push(Tokens({amount: _amount, lockEndTime: _lockEndTime, released: false}));
             emit TokensLocked(_to, _amount, _lockEndTime);
             return true;
@@ -72,7 +76,7 @@ contract LockedTokens is Param {
      * @dev Called by owner of locked tokens to release them
      */
     function releaseTokens() external
-        available 
+        available
         returns(bool) {
             require(mWalletTokens[msg.sender].length > 0);
 
@@ -90,7 +94,7 @@ contract LockedTokens is Param {
         available
         returns(bool) {
             require(msg.sender == address(mFund));
-            
+
             workable = false;
             return true;
     }
