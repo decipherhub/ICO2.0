@@ -212,7 +212,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function buyTokens(address _beneficiary) public payable period(STATE.ACTIVE) {
         require(_beneficiary != address(0));
         require(msg.value > 0);
-        require(now > START_TIME && now < END_TIME);
+        require(now > SALE_START_TIME && now < SALE_END_TIME);
 
         uint weiAmount = msg.value;
         // calculate token amount to be created
@@ -266,7 +266,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             mContributors[_address].amount = _amount;
         }
     }
-    function receiveTokens() public period(STATE.FINALIZE){
+    function receiveTokens() public period(STATE.FINALIZED){
         require(mContributors[msg.sender].tokens > 0);
         mToken.transfer(msg.sender, mContributors[msg.sender].tokens);
         delete mContributors[msg.sender];

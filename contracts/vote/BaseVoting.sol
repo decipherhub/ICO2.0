@@ -22,7 +22,7 @@ contract BaseVoting is Ownable, Param {
         uint256 power;
         bool isReceivedIncentive;
     }
-    
+
     /* Global Variables */
     string public mVotingName;
     VOTE_PERIOD mPeriod;
@@ -44,10 +44,10 @@ contract BaseVoting is Ownable, Param {
     address[] public party_list;
     address[] public public_party_list; //withhold
     address[] public locked_party_list; //withhold
-      
+
     bool public isAvailable = true;
     uint256 public discardTime;
-    
+
     /* Events */
     event InitializeVote(address indexed vote_account, string indexed voting_name, uint256 startTime, uint256 endTime);
     event OpenVote(address indexed opener, uint256 open_time);
@@ -60,7 +60,7 @@ contract BaseVoting is Ownable, Param {
         require(mPeriod == p, "VOTE_PERIOD not match.");
         _;
     }
-    
+
     modifier onlyVotingFactory() {
         require(msg.sender == mFactoryAddress);
         _;
@@ -78,7 +78,7 @@ contract BaseVoting is Ownable, Param {
         address _fundAddress,
         address _vestingTokensAddress,
         address _membersAddress
-        ) 
+        )
         public
         Ownable(_membersAddress) {
             require(_tokenAddress != address(0));
@@ -100,7 +100,7 @@ contract BaseVoting is Ownable, Param {
         returns(bool) {
             return (mPeriod == VOTE_PERIOD.OPENED);
     }
-    
+
     function getName() public view
         returns(string) {
             return mVotingName;
@@ -108,22 +108,28 @@ contract BaseVoting is Ownable, Param {
     // getPublicPerc = p (the percent of developers' token)
     function getPublicPerc() view public
         returns(uint256) {
-            return mToken.publicSupply().mul(1000).div(mToken.totalSupply());
+            return mFund.publicSupply().mul(1000).div(mToken.totalSupply());
     }
-    
-    function getParticipatingPerc() view public 
+
+    function getParticipatingPerc() view public
         returns(uint256) {
             uint256 total_token = mToken.totalSupply().mul(PUBLIC_TOKEN_PERC).div(1000);
             return getParticipantPower().mul(1000).div(total_token);
     }
 
-    function getMinVotingPerc() view public
+    function getMinVotingPerc() public pure
         returns(uint256) {
             //TODO: it is affected by the previous tap voting's participating rate.
             //IMPORTANT
-            return 200;
+            uint256 P_S=50;
+            uint256 p_M=80;
+            uint256 p_m=20;
+            uint256 N_M=80;
+            uint256 N_m=20;
+
+            return MIN_VOTE_PERCENT(P_S, p_M, p_m, N_M, N_m);
     }
-    
+
     function getTotalPower() view public
         returns(uint256) {
             // totalSupply(1-p) + totalSupply*p*DEV_POWER, p is dev ratio
@@ -131,23 +137,23 @@ contract BaseVoting is Ownable, Param {
             uint256 ret2 = mToken.totalSupply().mul(getPublicPerc()).mul(DEV_POWER).div(1000);
             return ret1.add(ret2);
     }
-    
+
     function getAgreePower() view public
         returns(uint256) {
             return agree_power;
     }
-   
-    function getDisagreePower() view public 
+
+    function getDisagreePower() view public
         returns(uint256) {
             return disagree_power;
     }
-    
+
     function getParticipantPower() public view
         returns(uint256) {
             return agree_power.add(disagree_power);
     }
-    
-    function getAbsentPower() view public 
+
+    function getAbsentPower() view public
         returns(uint256) {
             return getTotalPower().sub(getParticipantPower());
     }
@@ -168,7 +174,7 @@ contract BaseVoting is Ownable, Param {
             return discardTime;
     }
 
-    function readPartyDict(address account) public view 
+    function readPartyDict(address account) public view
         returns(VOTE_STATE, uint256, bool) {
             return (party_dict[account].state, party_dict[account].power, party_dict[account].isReceivedIncentive);
     }
@@ -178,7 +184,7 @@ contract BaseVoting is Ownable, Param {
         VOTE_STATE a,
         uint256 b,
         bool c)
-            public 
+            public
             available
             returns(bool) {
                 if(a != VOTE_STATE.NONE) {party_dict[account].state = a;}
@@ -190,9 +196,9 @@ contract BaseVoting is Ownable, Param {
     /* Voting Period Function
      * order: initialize -> open -> close -> finalize
      */
-    function initializeVote(uint256 _term) public 
+    function initializeVote(uint256 _term) public
         period(VOTE_PERIOD.NONE)
-        available 
+        available
         returns(bool) {
             require(msg.sender != 0x0);
 
@@ -200,7 +206,7 @@ contract BaseVoting is Ownable, Param {
             endTime = now + _term; // you should change the alpha into proper value.
             mPeriod = VOTE_PERIOD.INITIALIZED;
             emit InitializeVote(address(this), mVotingName, startTime, endTime);
-            return true; 
+            return true;
     }
 
     function openVote() public
@@ -226,11 +232,13 @@ contract BaseVoting is Ownable, Param {
     //should be overrided
     function finalizeVote() public
         period(VOTE_PERIOD.CLOSED)
-        available 
-        returns(bool) { 
-            return false; 
+        available
+        returns(bool) {
+            mPeriod = VOTE_PERIOD.FINALIZED;
+            emit FinalizeVote(msg.sender, now);
+            return true;
     }
-    
+
     function discard() public
         only(mFactoryAddress)
         period(VOTE_PERIOD.FINALIZED)
@@ -254,7 +262,7 @@ contract BaseVoting is Ownable, Param {
      */
     function vote(bool _agree) public
         available
-        returns(bool) {    
+        returns(bool) {
             require(isActivated());
             require(msg.sender != 0x0);
             require(party_dict[msg.sender].state == VOTE_STATE.NONE); // can vote only once
@@ -268,7 +276,7 @@ contract BaseVoting is Ownable, Param {
             }
             return true;
     }
-    
+
     function getBack() public
         available
         returns(bool) {
@@ -284,9 +292,9 @@ contract BaseVoting is Ownable, Param {
                 disagree_count = disagree_count.sub(1);
             }
             else { return false; }
-            return true; 
+            return true;
     }
-    
+
 }
 
 

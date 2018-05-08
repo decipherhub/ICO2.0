@@ -15,8 +15,14 @@ contract CustomToken is BaseToken{
         emit Transfer(0x0, msg.sender, totalSupply_);
     }
 
+    /**
+    * @dev returns the public supply of total tokens regardless of locked group tokens.
+    */
+   /*
     function publicSupply() public view
         returns(uint256) {
-           //TODO 
-        }
+           //DO NOT USE: use publicSupply() in Fund.sol
+
+    }
+   */
 }

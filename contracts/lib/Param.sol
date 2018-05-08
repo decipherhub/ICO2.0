@@ -70,12 +70,12 @@ contract Param {
             uint256 N_m) internal pure
             returns(uint256 X) {
                 //TODO: X ~ N(m, variance) => X-m/std ~ N(0, 1)
-                uint256 m = (P_S.mul(p_M).add((100.sub(P_S)).mul(p_m))).div(10000); 
-                uint256 variance = P_S.mul(P_S).mul(p_M).mul(100.sub(p_M)).div(N_M);
-                variance = variance.add( (100.sub(P_S)).mul(100.sub(P_S)).mul(p_m).mul(100.sub(p_m)).div(N_m) );
-                uint256 std = sqrt(variance.div(100000000));
+                /*uint256 m = (P_S.mul(p_M).add((uint256(100).sub(P_S)).mul(p_m))).div(uint256(10000));
+                uint256 variance = P_S.mul(P_S).mul(p_M).mul(uint256(100).sub(p_M)).div(N_M);
+                variance = variance.add( (uint256(100).sub(P_S)).mul(uint256(100).sub(P_S)).mul(p_m).mul(uint256(100).sub(p_m)).div(N_m) );
+                uint256 std = Sqrt.sqrt(variance.div(uint256(100000000)));
                 //If you wanna the voting rate 80%, P(Z>= -0.842) = 0.8
-                X = m.sub(std.mul(842).div(1000));
+                X = m.sub(std.mul(842).div(1000));*/
                 return X;
         }
 }

@@ -4,7 +4,7 @@ import "./BaseVoting.sol";
 import "../fund/Fund.sol";
 
 contract TapVoting is BaseVoting {
-    
+
     /* Constructor */
     constructor(
         string _votingName,
@@ -44,12 +44,12 @@ contract TapVoting is BaseVoting {
         returns(bool){
             //FIXIT: how to reduce the snapshot operation gas fee?
             //WARNING: it might exceed the block gas limit.
-            
+
             for(uint256 i = 0; i < party_list.length; i++) {
                 uint256 weight = isLockedGroup(party_list[i]) ? DEV_POWER : 1000; // percent
                 uint256 vote_power = mToken.balanceOf(party_list[i]).mul(weight).div(1000);
                 party_dict[party_list[i]].power = vote_power; //snapshot each account's vote power
-                party_dict[party_list[i]].group = isLockedGroup(party_list[i]) ? GROUP.LOCKED : GROUP.PUBLIC; 
+                party_dict[party_list[i]].group = isLockedGroup(party_list[i]) ? GROUP.LOCKED : GROUP.PUBLIC;
                 if(party_dict[party_list[i]].state == VOTE_STATE.AGREE) {
                     agree_power = agree_power.add(vote_power);
                 } else if(party_dict[party_list[i]].state == VOTE_STATE.DISAGREE) {
@@ -66,9 +66,9 @@ contract TapVoting is BaseVoting {
             // pass the vote if yes - no > 0
             require(mPeriod == VOTE_PERIOD.CLOSED);
             RESULT_STATE result = RESULT_STATE.NONE;
-            
+
             if(!_snapshot()){revert("failed to snapshot in tap finalize.");}
-            
+
             if(getParticipatingPerc() < getMinVotingPerc()){revert("It cannot satisfy minimum voting rate.");}
             if(getAgreePower() > getDisagreePower()) {
                 result = RESULT_STATE.PASSED;
@@ -78,7 +78,7 @@ contract TapVoting is BaseVoting {
             }
             mPeriod = VOTE_PERIOD.FINALIZED;
             emit FinalizeVote(msg.sender, now);
-            if(!mFund.withdrawFromFund()){revert("failed to withdrawFromFund in tap finalize.");}
+            if(!mFund.withdrawTap()){revert("failed to withdrawFromFund in tap finalize.");}
             return true;
     }
     /* Personal Voting function
@@ -91,7 +91,7 @@ contract TapVoting is BaseVoting {
             return super.vote(agree);
     }
 
-    function getBack() public 
+    function getBack() public
         period(VOTE_PERIOD.OPENED)
         available
         returns (bool) {

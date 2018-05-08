@@ -21,12 +21,16 @@ contract VestingTokens is LockedTokens {
     uint public constant PRIV_VEST_PERC_1 = 30;
     uint public constant PRIV_VEST_PERC_2 = 70;
 
-    constructor(IERC20 _token, address _crowdsaleAddress) public {
-        mToken = _token;
-        mCrowdsaleAddress = _crowdsaleAddress;
+    constructor(address _token, address _fundAddress) public
+        LockedTokens(_token, _fundAddress) {
     }
 
-    //divide this function with vesting type 
+    function setCrowdsaleAddress(address _crowdsaleAddress) public
+        returns(bool) {
+            return super.setCrowdsaleAddress(_crowdsaleAddress);
+    }
+
+    //divide this function with vesting type
     function lockup(address _to, uint256 _amount, LOCK_TYPE _type) external {
         require(msg.sender == mCrowdsaleAddress);
         if(_type == LOCK_TYPE.DEV){
