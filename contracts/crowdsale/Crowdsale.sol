@@ -186,7 +186,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     /* Change CrowdSale State, call only once */
     function activateSale() public 
         onlyOwner period(STATE.PREPARE){
-            require(now >= SALE_START_TIME && now <= SALE_END_TIME, "Worng Time");
+            require(now >= SALE_START_TIME && now < SALE_END_TIME, "Worng Time");
             require(mVestingTokens != address(0));
             mCurrentState = STATE.ACTIVE;
             mFund.startSale(); // tell crowdsale started
@@ -195,7 +195,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function finishSale() public 
         onlyOwner period(STATE.ACTIVE){
             require(now >= SALE_END_TIME);
-            require(address(this).balance > SOFT_CAP);
+            require(address(this).balance >= SOFT_CAP);
             _finish();
     }
     function finalizeSale() public
@@ -206,7 +206,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     }
     function activeRefund() public
         period(STATE.ACTIVE){
-            require(now > SALE_END_TIME);
+            require(now >= SALE_END_TIME);
             require(address(this).balance < SOFT_CAP);
             mCurrentState = STATE.REFUND;
     }
@@ -225,7 +225,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
         period(STATE.ACTIVE) {
             require(_beneficiary != address(0));
             require(msg.value > 0);
-            require(now > START_TIME && now < END_TIME);
+            require(now >= SALE_START_TIME && now < SALE_END_TIME);
 
             uint weiAmount = msg.value;
             // calculate token amount to be created
