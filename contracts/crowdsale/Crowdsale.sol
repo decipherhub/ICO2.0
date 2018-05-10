@@ -22,8 +22,12 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     using SafeMath for uint256;
     enum STATE {PREPARE, ACTIVE, FINISHED, FINALIZED, REFUND}
     struct Purchase{
-        uint amount;
+        uint ethers;
         uint tokens;
+    }
+    struct Whitelist{
+        bool isListed;
+        uint maxcap;
     }
 
     /* Global Variables */
@@ -38,6 +42,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     STATE public mCurrentState = STATE.PREPARE;
 
     //index => address => amount set of crowdsale participants
+    mapping(address => Whitelist) mWhitelist;
     mapping(address => uint) public mPrivateSale;
     mapping(address => uint) public mDevelopers;
     mapping(address => uint) public mAdvisors;
@@ -52,6 +57,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 wei_amount, uint256 token_amount);
     event EtherChanges(address indexed purchaser, uint value); // send back ETH changes
     event StateChanged(string state, uint time);
+    event RefundEthers(address indexed _receiver, uint _ethers);
 
 
 
@@ -189,6 +195,8 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
         onlyOwner period(STATE.PREPARE){
             require(now >= SALE_START_TIME && now < SALE_END_TIME, "Worng Time");
             require(mVestingTokens != address(0));
+            require(mToken.balanceOf(address(this)) == mToken.totalSupply());
+
             mCurrentState = STATE.ACTIVE;
             mFund.startSale(); // tell crowdsale started
             emit StateChanged("ACTIVE", now);
@@ -227,8 +235,10 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             require(_beneficiary != address(0));
             require(msg.value > 0);
             require(now >= SALE_START_TIME && now < SALE_END_TIME);
+            require(mWhitelist[_beneficiary].isListed);
 
             uint weiAmount = msg.value;
+            require(mWhitelist[_beneficiary].maxcap >= mContributors[_beneficiary].ethers.add(weiAmount));
             // calculate token amount to be created
             uint tokens;
             if(!isOver()){ //check if estimate ether exceeds next cap
@@ -277,7 +287,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
         uint _additionalToken) private
         period(STATE.ACTIVE){
             mContributors[_address].tokens = mContributors[_address].tokens.add(_additionalToken);
-            mContributors[_address].amount = mContributors[_address].amount.add(_additionalEther);
+            mContributors[_address].ethers = mContributors[_address].ethers.add(_additionalEther);
             
             mContributedTokens += _additionalToken;
     }
@@ -290,9 +300,11 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
 
     function refund() public 
         period(STATE.REFUND){
-            require(mContributors[msg.sender].amount > 0);
-            msg.sender.transfer(mContributors[msg.sender].amount);
+            require(mContributors[msg.sender].ethers > 0);
+            uint ethers = mContributors[msg.sender].ethers;
+            msg.sender.transfer(ethers);
             delete mContributors[msg.sender];
+            emit RefundEthers(msg.sender, ethers);
     }
 
 
@@ -303,6 +315,11 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
         onlyOwner period(STATE.PREPARE) {
             require(mVestingTokens == address(0)); //only once
             mVestingTokens = VestingTokens(_vestingTokensAddress);
+    }
+    function addWhitelist(address _whitelist, uint _maxcap) public onlyOwner{
+        require(mCurrentState < STATE.FINISHED);
+        mWhitelist[_whitelist].isListed = true;
+        mWhitelist[_whitelist].maxcap = _maxcap;
     }
     //add developers, advisors, privateSale
     //check if it exceeds percentage

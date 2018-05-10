@@ -9,15 +9,14 @@ contract Param {
     using Sqrt for uint256;
     /* Token */
     uint8 public constant DECIMALS = 18;
-    uint public constant INITIAL_SUPPLY = 100 * (1000 ** 3) * (10 ** uint256(DECIMALS));
-    string public constant TOKEN_NAME = "CUSTOM";
-    string public constant TOKEN_SYMBOL = "CTM";
+    uint public constant INITIAL_SUPPLY = (1000 ** 3) * (10 ** uint256(DECIMALS));
+    string public constant TOKEN_NAME = "Decipher";
+    string public constant TOKEN_SYMBOL = "DEC";
 
     /* Crowdsale */
 
     uint public constant HARD_CAP = 37500 ether;
     uint public constant SOFT_CAP = 5000 ether;
-    uint public constant MIN_CONTRIB = 5000 ether;
 
         //percentage of tokens total : 1000%
     uint public constant PUB_TOKEN_PERC = 200;
@@ -28,13 +27,9 @@ contract Param {
     uint public constant REWARD_TOKEN_PERC = 200;
     uint public constant INCENTIVE_TOKEN_PERC = 10;
 
-        //limitation of public participants
-    uint public constant ETHER_MIN_CONTRIB = 1 ether;
-    uint public constant ETHER_MAX_CONTRIB = 300 ether;
-
         //crowd sale time
-    uint public constant SALE_START_TIME = 0;
-    uint public constant SALE_END_TIME = 0;
+    uint public constant SALE_START_TIME = 1526169600000; // 5/13 00:00:00
+    uint public constant SALE_END_TIME = 1527119999000; // 5/23 23:59:59
 
         // how many token units a buyer gets per wei
     uint public constant DEFAULT_RATE = 50*10**5; //this is ether/token or wei/tokenWei

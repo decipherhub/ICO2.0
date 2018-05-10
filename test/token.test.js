@@ -6,9 +6,9 @@ const CustomToken = artifacts.require("CustomToken");
 const BigNumber = web3.BigNumber;
 
 require('chai')
-  .use(require('chai-as-promised'))
-  .use(require('chai-bignumber')(BigNumber))
-  .should();
+    .use(require('chai-as-promised'))
+    .use(require('chai-bignumber')(BigNumber))
+    .should();
 
 /**
  * below test code is modification of https://www.pubnub.com/blog/testing-and-deploying-an-ethereum-token-part-2/
