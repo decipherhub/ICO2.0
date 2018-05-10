@@ -17,7 +17,7 @@ contract RefundVoting is BaseVoting {
                     _tokenAddress,
                     _fundAddress,
                     _vestingTokens, 
-                    membersAddress) public {
+                    _membersAddress) public {
     }
     
     function canDiscard() public view

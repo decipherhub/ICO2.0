@@ -282,7 +282,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             mContributedTokens += _additionalToken;
     }
     function receiveTokens() public 
-        period(STATE.FINALIZE){
+        period(STATE.FINALIZED){
             require(mContributors[msg.sender].tokens > 0);
             mToken.transfer(msg.sender, mContributors[msg.sender].tokens);
             delete mContributors[msg.sender];

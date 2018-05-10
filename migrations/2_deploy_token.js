@@ -1,8 +1,8 @@
 const CustomToken = artifacts.require("./CustomToken.sol");
 const SafeMath = artifacts.require("./SafeMath.sol");
 
-module.exports = function(deployer, network, accounts) {
-    console.log(accounts[0]);
+module.exports = async function(deployer, network, accounts) {
+    console.log("Deploying Token", accounts[0]);
     deployer.deploy(SafeMath);
     deployer.link(SafeMath, CustomToken);
     deployer.deploy(CustomToken, {from: accounts[0], gasLimit: 50000000});

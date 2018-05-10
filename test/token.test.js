@@ -1,8 +1,22 @@
+import { increaseTimeTo, duration } from 'openzeppelin-solidity/test/helpers/increaseTime';
+import { advanceBlock } from 'openzeppelin-solidity/test/helpers/advanceToBlock';
+
 const CustomToken = artifacts.require("CustomToken");
 
+const BigNumber = web3.BigNumber;
+
+require('chai')
+  .use(require('chai-as-promised'))
+  .use(require('chai-bignumber')(BigNumber))
+  .should();
+
 contract("CustomToken", function(accounts){
+    let instance;
+    before(async () => {
+        instance = await CustomToken.deployed();
+    })
+
     it("should value is totalSupply", async () => {
-        let instance = await CustomToken.deployed();
         let initialBalance = await instance.balanceOf(accounts[0]);
         let totalSupply = await instance.totalSupply.call();
 
