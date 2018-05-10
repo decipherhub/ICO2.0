@@ -9,7 +9,7 @@ contract CustomToken is BaseToken{
     constructor() public
         {
             decimals = 18;     // Amount of decimals for display purposes
-            name = "decipher";    // Set the name for display purposes
+            name = "Decipher";    // Set the name for display purposes
             symbol = "DEC";        // Set the symbol for display purposes
             totalSupply_ = 1000 * 1000 * 1000 * (10 ** uint(decimals));    // Update total supply, 100 billion tokens
             balances[msg.sender] = totalSupply_;

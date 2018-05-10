@@ -3,6 +3,7 @@ const CustomToken = artifacts.require("./CustomToken.sol");
 const Fund = artifacts.require("./Fund.sol");
 const Members = artifacts.require("./Members.sol");
 const VestingTokens = artifacts.require("./VestingTokens.sol");
+const SafeMath = artifacts.require("./SafeMath.sol");
 
 module.exports = async function(deployer, network, accounts){
     deployer.deploy(SafeMath);

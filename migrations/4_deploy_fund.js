@@ -1,5 +1,4 @@
 const CustomToken = artifacts.require("./CustomToken.sol");
-const Crowdsale = artifacts.require("./Crowdsale.sol");
 const Members = artifacts.require("./Members.sol");
 const SafeMath = artifacts.require("./SafeMath.sol");
 
