@@ -31,7 +31,8 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     Fund public mFund; // ether bank, it should be Fund.sol's Contract address
     VestingTokens public mVestingTokens;
 
-    uint public mCurrentAmount;
+    uint public mCurrentAmount; //ether amount
+    uint public mContributedTokens = 0;
     //discount rate -20%(~1/8) => -15%(~2/8) => -10%(~3/8) => -5%(~4/8) =>0%(~8/8)
     uint public mCurrentDiscountPerc = 20; //inital discount rate
     STATE public mCurrentState = STATE.PREPARE;
@@ -148,16 +149,16 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     }
 
     // function which checks the amount would be over next cap
-    function isOver(uint _weiAmount) public view 
+    function isOver() public view 
         returns(bool){
             if(mCurrentDiscountPerc == 0){
-                if(address(this).balance.add(_weiAmount) >= HARD_CAP){
+                if(address(this).balance >= HARD_CAP){
                     return true;
                 } else{
                     return false;
                 }
             }
-            if(address(this).balance.add(_weiAmount) >= getNextCap()){
+            if(address(this).balance >= getNextCap()){
                 return true;
             } else{
                 return false;
@@ -230,7 +231,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             uint weiAmount = msg.value;
             // calculate token amount to be created
             uint tokens;
-            if(!isOver(weiAmount)){ //check if estimate ether exceeds next cap
+            if(!isOver()){ //check if estimate ether exceeds next cap
                 tokens = getTokenAmount(weiAmount);
                 emit TokenPurchase(msg.sender, _beneficiary, weiAmount, tokens);
             } else{
@@ -240,7 +241,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                 uint ether2;
                 if(mCurrentDiscountPerc > 0){
                     // When discount rate should be changed
-                    ether2 = address(this).balance.add(weiAmount).sub(getNextCap()); //(balance + weiAmount) - NEXT_CAP
+                    ether2 = address(this).balance.sub(getNextCap()); //(balance + weiAmount) - NEXT_CAP
                     ether1 = weiAmount.sub(ether2);
                     tokens = getTokenAmount(ether1);
                     emit TokenPurchase(msg.sender, _beneficiary, ether1, tokens);
@@ -251,7 +252,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                     tokens = tokens.add(additionalTokens);
                 } else if(mCurrentDiscountPerc == 0){
                     // Do when CrowdSale Ended
-                    ether2 = address(this).balance.add(weiAmount).sub(HARD_CAP);
+                    ether2 = address(this).balance.sub(HARD_CAP);
                     ether1 = weiAmount.sub(ether2);
                     tokens = getTokenAmount(ether1);
 
@@ -272,16 +273,13 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     }
     function _addToUserContributed(
         address _address,
-        uint _amount,
-        uint _additionalAmount) private
+        uint _additionalEther,
+        uint _additionalToken) private
         period(STATE.ACTIVE){
-            if(mContributors[_address].tokens > 0){
-                mContributors[_address].tokens = mContributors[_address].tokens.add(_additionalAmount);
-                mContributors[_address].amount = mContributors[_address].amount.add(_amount);
-            } else{
-                mContributors[_address].tokens = _additionalAmount;
-                mContributors[_address].amount = _amount;
-            }
+            mContributors[_address].tokens = mContributors[_address].tokens.add(_additionalToken);
+            mContributors[_address].amount = mContributors[_address].amount.add(_additionalEther);
+            
+            mContributedTokens += _additionalToken;
     }
     function receiveTokens() public 
         period(STATE.FINALIZE){
