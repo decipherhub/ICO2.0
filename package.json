@@ -6,13 +6,23 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "zeppelin-solidity": "^1.8.0",
     "truffle": "^4.1.5",
-    "ganache-cli": "6.1.0"
+    "ganache-cli": "6.1.0",
+    "babel-cli": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "chai-bignumber": "^2.0.2",
+    "openzeppelin-solidity": "1.9.0",
+    "solium": "^1.1.6"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Strawberry-Pizza/ICO2.0.git"
+    "url": "git+https://github.com/decipherhub/ICO2.0.git"
   },
   "keywords": [
     "ico2.0",
@@ -26,7 +36,7 @@
   "author": "Jungwoo Pyo <wjddn1801@snu.ac.kr>",
   "license": "GPL3.0",
   "bugs": {
-    "url": "https://github.com/Strawberry-Pizza/ICO2.0/issues"
+    "url": "https://github.com/decipherhub/ICO2.0/issues"
   },
-  "homepage": "https://github.com/Strawberry-Pizza/ICO2.0#readme"
+  "homepage": "https://github.com/decipherhub/ICO2.0#readme"
 }
