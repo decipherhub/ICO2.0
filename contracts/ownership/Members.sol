@@ -1,14 +1,15 @@
 pragma solidity ^0.4.23;
 
 contract Members {
-    // enum MEMBER_LEVEL {NONE, PRIV, ADV, DEV, OWNER}
-    /* Crucial!!
-        We have to fix LEVEL Overlapping problem.
-     */
+    enum MEMBER_LEVEL {NONE, PRIV, ADV, DEV, OWNER}
+    /* 
+        Remember we seperated accounts,
+        so it should never receive duplicated address
+    */
 
     address owner_;
     address mCrowdsaleAddress;
-    mapping(address => MEMBER_LEVEL) mMemberLevel;
+    mapping(address => MEMBER_LEVEL) public mMemberLevel;
 
     address[] mDevelopers; // we should define owner is a member of dev
     address[] mAdvisors;

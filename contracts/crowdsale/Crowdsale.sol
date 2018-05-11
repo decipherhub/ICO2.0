@@ -306,9 +306,16 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     }
     //add developers, advisors, privateSale
     //check if it exceeds percentage
+
+    /*
+        We should consider to lower gas of below functions
+        There are some duplicated check code
+    */
+
     function setToDevelopers(address _address, uint _tokenWeiAmount) public 
         onlyOwner{
             require(_address != address(0));
+            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.DEV), "Enrollment Duplicated!");
             uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.DEV).add(_tokenWeiAmount);
             require(lockedAmount <= mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC), "Over!");
             // Solidity will roll back when it reverted
@@ -332,6 +339,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function setToAdvisors(address _address, uint _tokenWeiAmount) public 
         onlyOwner{
             require(_address != address(0));
+            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.ADV), "Enrollment Duplicated!");
             uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.ADV).add(_tokenWeiAmount);
             require(lockedAmount <= mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC), "Over!");
             // Solidity will roll back when it reverted
@@ -355,6 +363,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function setToPrivateSale(address _address, uint _tokenWeiAmount) public 
         onlyOwner{
             require(_address != address(0));
+            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.PRIV), "Enrollment Duplicated!");
             uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.PRIV).add(_tokenWeiAmount);
             require(lockedAmount <= mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC), "Over!");
             // Solidity will roll back when it reverted
@@ -374,6 +383,22 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                 members.enroll_privsale(_address);
             }
             
+    }
+    function _isEnrollmentDuplicated(
+        address _address,
+        Members.MEMBER_LEVEL _level
+        ) private
+        returns(bool){
+            Members.MEMBER_LEVEL level = members.mMemberLevel[_address];
+            if(level == Members.MEMBER_LEVEL.NONE || level == _level){
+                // left means trying update
+                // right means trying enrollment first time
+                return false;
+            }
+            if(level == Members.MEMBER_LEVEL.OWNER && _level == Members.MEMBER_LEVEL.DEV){
+                return false;
+            }
+            return true;
     }
 
 
