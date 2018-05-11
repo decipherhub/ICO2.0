@@ -9,7 +9,7 @@ contract Param {
     using Sqrt for uint256;
     /* Token */
     uint8 public constant DECIMALS = 18;
-    uint public constant INITIAL_SUPPLY = (1000 ** 3) * (10 ** uint256(DECIMALS));
+    uint public constant INITIAL_SUPPLY = 100 * (1000 ** 3) * (10 ** uint256(DECIMALS));
     string public constant TOKEN_NAME = "Decipher";
     string public constant TOKEN_SYMBOL = "DEC";
 

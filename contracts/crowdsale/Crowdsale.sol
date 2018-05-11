@@ -39,10 +39,10 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     uint public mContributedTokens = 0;
     //discount rate -20%(~1/8) => -15%(~2/8) => -10%(~3/8) => -5%(~4/8) =>0%(~8/8)
     uint public mCurrentDiscountPerc = 20; //inital discount rate
-    STATE public mCurrentState = STATE.PREPARE;
+    STATE mCurrentState = STATE.PREPARE;
 
     //index => address => amount set of crowdsale participants
-    mapping(address => Whitelist) mWhitelist;
+    mapping(address => Whitelist) public mWhitelist;
     mapping(address => uint) public mPrivateSale;
     mapping(address => uint) public mDevelopers;
     mapping(address => uint) public mAdvisors;
@@ -89,7 +89,6 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     /* View Function */
     function getStartTime() view public returns(uint256) { return SALE_START_TIME; }
     function getEndTime() view public returns(uint256) { return SALE_END_TIME; }
-
     function getFundingGoal() view public returns(uint256) { return HARD_CAP; }
     function getCurrentSate() view external
         returns(string){

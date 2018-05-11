@@ -35,19 +35,19 @@ contract("Crowdsale", function(accounts){
         SALE_END_TIME = await instance.SALE_END_TIME.call();
     })
     it("shouldn't active when its balance is not totalSupply", async () => {
-        await token.transfer(instance.address, 10, );
+        await token.transfer(instance.address, 10);
         let balance = await token.balanceOf(instance.address);
         console.log(balance.toNumber()/(10 ** decimals))
         await instance.activeSale().should.be.rejectedWith('revert');
         let leftBalance = await token.balanceOf(accounts[0]);
-        token.transfer(instance.address, leftBalance, ).should.be.fulfilled;
+        token.transfer(instance.address, leftBalance).should.be.fulfilled;
     });
     it("should have same owner with deployer", async () => {
         let isOwner = await instance.isOwner(accounts[0]);
         assert.equal(isOwner, true, "not same owner");
     });
     it("shouldn't receive ether when preparing process", async () =>{
-        instance.send(web3.toWei(10, 'ether'), ).should.be.rejectedWith('revert');
+        instance.send(web3.toWei(10, 'ether')).should.be.rejectedWith('revert');
         instance.buyTokens(accounts[0], {from : accounts[0], value : web3.toWei(10, 'ether')}).should.be.rejectedWith('revert');
     });
     it("shouldn't active onlyOwner function", async () => {
@@ -79,7 +79,7 @@ contract("Crowdsale", function(accounts){
         instance.activeSale().should.be.rejectedWith('revert'); //not call twice
 
         instance.finishSale().should.be.rejectedWith('revert');
-        instance.send(web3.toWei(10, 'ether'), ).should.be.rejectedWith('revert');
+        instance.send(web3.toWei(10, 'ether')).should.be.rejectedWith('revert');
         instance.buyTokens(accounts[0], {from : accounts[0], value : web3.toWei(10, 'ether')}).should.be.rejectedWith('revert');
         instance.activeRefund().should.be.rejectedWith('revert');
         instance.finalizeSale().should.be.rejectedWith('revert');
@@ -93,8 +93,8 @@ contract("Crowdsale", function(accounts){
         instance.sendTransaction({from : accounts[4], value : web3.toWei(1, 'ether')}).should.be.rejectedWith('revert');
         instance.sendTransaction({from : accounts[2], value : web3.toWei(10, 'ether')}).should.be.rejectedWith('revert');
 
-        let tokenBalance0 = await instance.getContributors.call(accounts[0]);
-        let tokenBalance2 = await instance.getContributors.call(accounts[2]);
+        let tokenBalance0 = (await instance.mContributors.call(accounts[0]))[1];
+        let tokenBalance2 = (await instance.mContributors.call(accounts[2]))[1];
         console.log(tokenBalance0.toNumber()/10**decimals, tokenBalance2.toNumber()/10**decimals);
     });
     it("shouldn't active other processes before sale finished", async () =>{
