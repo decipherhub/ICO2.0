@@ -322,44 +322,99 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     }
     //add developers, advisors, privateSale
     //check if it exceeds percentage
+
+    /*
+        We should consider to lower gas of below functions
+        There are some duplicated check code
+    */
+
     function setToDevelopers(address _address, uint _tokenWeiAmount) public 
         onlyOwner{
             require(_address != address(0));
-            if(mDevelopers[_address] > 0){
-                mDevelopers[_address] = _tokenWeiAmount;
-            } else{
-                mDevelopers[_address] = _tokenWeiAmount;
-                mDevelopersIndex.push(_address);
-            }
-            uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.DEV);
+            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.DEV), "Enrollment Duplicated!");
+            uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.DEV).add(_tokenWeiAmount);
             require(lockedAmount <= mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC), "Over!");
             // Solidity will roll back when it reverted
+            // check already included
+            if(mDevelopers[_address] > 0){
+                mDevelopers[_address] = _tokenWeiAmount;
+                if(_tokenWeiAmount == 0){   // if input == 0 => delete
+                    members.delete_developer(_address);
+                }
+            } else{
+                if(_tokenWeiAmount == 0){   // if input == 0 => revert
+                    revert("don't set 0 at first");
+                }
+                // add members
+                mDevelopers[_address] = _tokenWeiAmount;
+                mDevelopersIndex.push(_address);
+                members.enroll_developer(_address);
+            }
+            
     }
     function setToAdvisors(address _address, uint _tokenWeiAmount) public 
         onlyOwner{
             require(_address != address(0));
-            if(mAdvisors[_address] > 0){
-                mAdvisors[_address] = _tokenWeiAmount;
-            } else{
-                mAdvisors[_address] = _tokenWeiAmount;
-                mAdvisorsIndex.push(_address);
-            }
-            uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.ADV);
+            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.ADV), "Enrollment Duplicated!");
+            uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.ADV).add(_tokenWeiAmount);
             require(lockedAmount <= mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC), "Over!");
             // Solidity will roll back when it reverted
+            // check already included
+            if(mAdvisors[_address] > 0){
+                mAdvisors[_address] = _tokenWeiAmount;
+                if(_tokenWeiAmount == 0){   // if input == 0 => delete
+                    members.delete_advisor(_address);
+                }
+            } else{
+                if(_tokenWeiAmount == 0){   // if input == 0 => revert
+                    revert("don't set 0 at first");
+                }
+                // add members
+                mAdvisors[_address] = _tokenWeiAmount;
+                mAdvisorsIndex.push(_address);
+                members.enroll_advisor(_address);
+            }
+            
     }
     function setToPrivateSale(address _address, uint _tokenWeiAmount) public 
         onlyOwner{
             require(_address != address(0));
-            if(mPrivateSale[_address] > 0){
-                mPrivateSale[_address] = _tokenWeiAmount;
-            } else{
-                mPrivateSale[_address] = _tokenWeiAmount;
-                mPrivateSaleIndex.push(_address);
-            }
-            uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.PRIV);
+            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.PRIV), "Enrollment Duplicated!");
+            uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.PRIV).add(_tokenWeiAmount);
             require(lockedAmount <= mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC), "Over!");
             // Solidity will roll back when it reverted
+            // check already included
+            if(mPrivateSale[_address] > 0){
+                mPrivateSale[_address] = _tokenWeiAmount;
+                if(_tokenWeiAmount == 0){   // if input == 0 => delete
+                    members.delete_privsale(_address);
+                }
+            } else{
+                if(_tokenWeiAmount == 0){   // if input == 0 => revert
+                    revert("don't set 0 at first");
+                }
+                // add members
+                mPrivateSale[_address] = _tokenWeiAmount;
+                mPrivateSaleIndex.push(_address);
+                members.enroll_privsale(_address);
+            }
+            
+    }
+    function _isEnrollmentDuplicated(
+        address _address,
+        Members.MEMBER_LEVEL _level
+        ) private
+        returns(bool){
+            Members.MEMBER_LEVEL level = members.mMemberLevel[_address];
+            if(level == Members.MEMBER_LEVEL.NONE || level == _level){
+                // left means trying update
+                // right means trying enrollment first time
+                return false;
+            }
+            if(level == Members.MEMBER_LEVEL.OWNER && _level == Members.MEMBER_LEVEL.DEV){
+                return false;
+            }
+            return true;
     }
 
 
@@ -387,26 +442,35 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function _lockup() private {
             //lock tokens
             uint i = 0;
-            for (i = 0; i < mPrivateSaleIndex.length; i++) {
-                mVestingTokens.lockup(
-                    mPrivateSaleIndex[i],
-                    mPrivateSale[mPrivateSaleIndex[i]],
-                    VestingTokens.LOCK_TYPE.PRIV
-                );
-            }
             for (i = 0; i < mDevelopersIndex.length; i++) {
-                mVestingTokens.lockup(
-                    mDevelopersIndex[i],
-                    mDevelopers[mDevelopersIndex[i]],
-                    VestingTokens.LOCK_TYPE.DEV
-                );
+                if(mDevelopers[mDevelopersIndex[i]] > 0){
+                    mVestingTokens.lockup(
+                        mDevelopersIndex[i],
+                        mDevelopers[mDevelopersIndex[i]],
+                        VestingTokens.LOCK_TYPE.DEV
+                    );
+                    delete mDevelopers[mDevelopersIndex[i]];
+                }
             }
             for (i = 0; i < mAdvisorsIndex.length; i++) {
-                mVestingTokens.lockup(
-                    mAdvisorsIndex[i],
-                    mAdvisors[mAdvisorsIndex[i]],
-                    VestingTokens.LOCK_TYPE.ADV
-                );
+                if(mAdvisors[mAdvisorsIndex[i]] > 0){
+                    mVestingTokens.lockup(
+                        mAdvisorsIndex[i],
+                        mAdvisors[mAdvisorsIndex[i]],
+                        VestingTokens.LOCK_TYPE.ADV
+                    );
+                    delete mAdvisors[mAdvisorsIndex[i]];
+                }
+            }
+            for (i = 0; i < mPrivateSaleIndex.length; i++) {
+                if(mPrivateSale[mPrivateSaleIndex[i]] > 0 ){
+                    mVestingTokens.lockup(
+                        mPrivateSaleIndex[i],
+                        mPrivateSale[mPrivateSaleIndex[i]],
+                        VestingTokens.LOCK_TYPE.PRIV
+                    );
+                    delete mPrivateSale[mPrivateSaleIndex[i]];
+                }
             }
             //send Vesting tokens to VestingTokens.sol
             mToken.transfer(mVestingTokens, mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC + ADV_TOKEN_PERC + PRIV_TOKEN_PERC));
