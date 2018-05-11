@@ -1,34 +1,56 @@
 pragma solidity ^0.4.23;
 
 contract Members {
-    enum MEMBER_LEVEL {NONE, LOCKED, DEV, OWNER}
+    // enum MEMBER_LEVEL {NONE, PRIV, ADV, DEV, OWNER}
+    /* Crucial!!
+        We have to fix LEVEL Overlapping problem.
+     */
 
     address owner_;
-    mapping(address => MEMBER_LEVEL) memberLevel;
+    address mCrowdsaleAddress;
+    mapping(address => MEMBER_LEVEL) mMemberLevel;
 
+    address[] mDevelopers; // we should define owner is a member of dev
+    address[] mAdvisors;
+    address[] mPrivsale;
+
+
+    /* Events */
     event CreateOwnership(address indexed _owner);
     event OwnershipTransferred(address indexed _previousOwner, address indexed _newOwner);
-    event EnrollLockedGroup(address indexed _crowdsaleAddr, address indexed _presaleAddr);
-    event EnrollDeveloper(address indexed _owner, address indexed _devAddress);
-    event DeleteDeveloper(address indexed _owner, address indexed _devAddress);
+    event EnrollDeveloper(address indexed _devAddress);
+    event EnrollAdvisor(address indexed _advAddress);
+    event EnrollPrivsale(address indexed _privAddress);
+    event DeleteDeveloper(address indexed _devAddress);
+    event DeleteAdvisor(address indexed _advAddress);
+    event DeletePrivsale(address indexed _privAddress);
 
+
+    /* Modifier */
     modifier onlyOwner() {
         require(msg.sender == owner_, "Not Owner");
         _;
     }
 
     modifier only(address addr) {
-        require(msg.sender != 0x0);
+        require(msg.sender != address(0));
         require(msg.sender == addr, "Not corresponding address");
         _;
     }
 
+
+
+    /* Functions */
+    // Constructor
     constructor() public {
             owner_ = msg.sender;
             emit CreateOwnership(owner_);
-            memberLevel[owner_] = MEMBER_LEVEL.OWNER;
+            mMemberLevel[owner_] = MEMBER_LEVEL.OWNER;
+            mDevelopers.push(owner_);
     }
 
+
+    // View functions
     function owner() public view
         returns(address) {
             return owner_;
@@ -36,47 +58,103 @@ contract Members {
 
     function isLockedGroup(address addr) public view
         returns(bool) {
-            return (uint(memberLevel[addr]) > uint(MEMBER_LEVEL.NONE));
+            return (uint(mMemberLevel[addr]) > uint(MEMBER_LEVEL.NONE));
     }
 
     function isDeveloper(address addr) public view
         returns(bool) {
-            return (uint(memberLevel[addr]) > uint(MEMBER_LEVEL.LOCKED));
+            return (uint(mMemberLevel[addr]) >= uint(MEMBER_LEVEL.DEV));
     }
 
+
+    // Ownership functions
     function transferOwnership(address newOwner) public
         onlyOwner {
-            require(newOwner != 0x0);
+            require(newOwner != address(0));
             require(isDeveloper(newOwner), "Not Developers");
+
             emit OwnershipTransferred(owner_, newOwner);
-            memberLevel[newOwner] = MEMBER_LEVEL.OWNER;
-            memberLevel[owner_] = MEMBER_LEVEL.LOCKED; //FIXIT
+            mMemberLevel[newOwner] = MEMBER_LEVEL.OWNER;
+            mMemberLevel[owner_] = MEMBER_LEVEL.DEV; // we should define owner is a member of dev
             owner_ = newOwner;
     }
 
-    function enroll_presale(address addr) public
-        //only(crowdsale_address) { // FIXIT: is it possible?
-        {
-            require(addr != 0x0);
-            require(!isLockedGroup(addr), "It is already in locked group");
-            emit EnrollLockedGroup(msg.sender, addr);
-            memberLevel[addr] = MEMBER_LEVEL.LOCKED;
+
+    // Set functions
+    function setCrowdsale(address _saleAddr) public
+        onlyOwner {
+            require(_saleAddr != address(0));
+            mCrowdsaleAddress = _saleAddr;
     }
 
-    function enroll_developer(address dev_addr) public
-        onlyOwner {
-            require(dev_addr != 0x0);
-            require(!isDeveloper(dev_addr), "It is developer");
-            emit EnrollDeveloper(msg.sender, dev_addr);
-            memberLevel[dev_addr] = MEMBER_LEVEL.DEV;
+    function enroll_developer(address _devAddr) external
+        only(mCrowdsaleAddress) {
+            require(_devAddr != address(0));
+            require(!isDeveloper(_devAddr), "It is developer");
+            emit EnrollDeveloper(_devAddr);
+            mDevelopers.push(_devAddr);
+            mMemberLevel[_devAddr] = MEMBER_LEVEL.DEV;
     }
 
-    function delete_developer(address dev_addr) public
-        onlyOwner {
-            require(dev_addr != 0x0);
-            require(dev_addr != owner_, "Must not be self-destruct");
-            require(isDeveloper(dev_addr), "Not Developers");
-            emit DeleteDeveloper(msg.sender, dev_addr);
-            memberLevel[dev_addr] = MEMBER_LEVEL.LOCKED; // FIXIT
+    function enroll_advisor(address _advAddr) external
+        only(mCrowdsaleAddress) {
+            require(_advAddr != address(0));
+            require(mMemberLevel[_advAddr] != MEMBER_LEVEL.ADV, "It is already in advisor group");
+            emit EnrollAdvisor(_advAddr);
+            mAdvisors.push(_advAddr);
+            mMemberLevel[_advAddr] = MEMBER_LEVEL.ADV;
+    }
+
+    function enroll_privsale(address _privAddr) external
+        only(mCrowdsaleAddress) {
+            require(_privAddr != address(0));
+            require(mMemberLevel[_privAddr] != MEMBER_LEVEL.PRIV, "It is already in privsale group");
+            emit EnrollPrivsale(_privAddr);
+            mPrivsale.push(_privAddr);
+            mMemberLevel[_privAddr] = MEMBER_LEVEL.PRIV;
+    }
+
+    function delete_developer(address _devAddr) external
+        only(mCrowdsaleAddress) {
+            require(_devAddr != address(0));
+            require(mMemberLevel[_devAddr] == MEMBER_LEVEL.DEV);
+            emit DeleteDeveloper(_devAddr);
+            mMemberLevel[_devAddr] = MEMBER_LEVEL.NONE;
+            _reorganizeArray(mDevelopers, _devAddr);
+    }
+
+    function delete_advisor(address _advAddr) external
+        only(mCrowdsaleAddress) {
+            require(_advAddr != address(0));
+            require(mMemberLevel[_advAddr] == MEMBER_LEVEL.ADV);
+            emit DeleteAdvisor(_advAddr);
+            mMemberLevel[_advAddr] = MEMBER_LEVEL.NONE;
+            _reorganizeArray(mAdvisors, _advAddr);
+    }
+    
+    function delete_privsale(address _privAddr) external
+        only(mCrowdsaleAddress) {
+            require(_privAddr != address(0));
+            require(mMemberLevel[_privAddr] == MEMBER_LEVEL.PRIV);
+            emit DeletePrivsale(_privAddr);
+            mMemberLevel[_privAddr] = MEMBER_LEVEL.NONE;
+            _reorganizeArray(mPrivsale, _privAddr);
+    }
+
+
+    // Internal functions
+
+    // to minimize gas : delete => void = length-1
+    function _reorganizeArray(
+        address[] storage _array,
+        address _deleteAddr) private {
+            for(uint i = 0; i < _array.length; i++){
+                if(_array[i] == _deleteAddr){
+                    _array[i] = _array[_array.length - 1];
+                    delete _array[_array.length - 1];
+                    _array.length--;
+                    break;
+                }
+            }
     }
 }
