@@ -42,7 +42,7 @@ contract("Crowdsale", function(accounts){
     // 4 => teamWallet
     // 10 ~ 59 => public 20%
     // 60 ~ 64 => advisors 5%
-    // 65 ~ 80 => presale 20%
+    // 65 ~ 84 => privsale 20%
     it("should list users", async () => {
         for(let i = 10; i < 59; i++){
             instance.addWhitelist(accounts[i], web3.toWei(300, 'ether'));
@@ -50,7 +50,13 @@ contract("Crowdsale", function(accounts){
     });
     it("should add priv, adv, dev", async () => {
         for(let i = 0; i < 4; i++){
-            instance.setToDevelopers(accounts[i], web3.toWei(3.5 * 1000**3, 'ether'))
+            instance.setToDevelopers(accounts[i], web3.toWei(3.5 * 1000**3, 'ether')).should.be.fulfilled;
+        }
+        for(let i = 60; i < 65; i++){
+            instance.setToAdvisors(accounts[i], web3.toWei(1000*3, 'ether')).should.be.fulfilled;
+        }
+        for(let i = 65; i < 85; i++){
+            instance.setToPrivateSale(accounts[i], web3.toWei(1000*3, 'ether')).should.be.fulfilled;
         }
     });
     it("should be activated", async () =>{
@@ -111,5 +117,4 @@ contract("Crowdsale", function(accounts){
         let balance = (await web3.eth.getBalance(instance.address)).toNumber();
         assert.equal(balance, 0, balance +'and'+ 0);
     });
-
 });
