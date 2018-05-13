@@ -37,11 +37,12 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
 
     uint public mCurrentAmount; //ether amount
     uint public mContributedTokens = 0;
-    //discount rate -20%(~1/8) => -15%(~2/8) => -10%(~3/8) => -5%(~4/8) =>0%(~8/8)
+    // discount rate -20%(~1/8) => -15%(~2/8) => -10%(~3/8) => -5%(~4/8) => 0%(~8/8)
+    // cap is ratio of tokens, discount rate is of ethers
     uint public mCurrentDiscountPerc = 20; //inital discount rate
     STATE mCurrentState = STATE.PREPARE;
 
-    //index => address => amount set of crowdsale participants
+    // index => address => amount set of crowdsale participants
     mapping(address => Whitelist) public mWhitelist;
     mapping(address => uint) public mPrivateSale;
     mapping(address => uint) public mDevelopers;

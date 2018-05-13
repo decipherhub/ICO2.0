@@ -3,6 +3,8 @@ import { advanceBlock } from 'openzeppelin-solidity/test/helpers/advanceToBlock'
 
 const CustomToken = artifacts.require("CustomToken");
 const Crowdsale = artifacts.require("Crowdsale");
+const Members = artifacts.require("Members");
+const VestingTokens = artifacts.require("VestingTokens");
 
 const BigNumber = web3.BigNumber;
 
@@ -13,7 +15,7 @@ require('chai')
 
 contract("Crowdsale", function(accounts){
     let instance;
-    let token;
+    let customToken;
     let totalSupply;
     let decimals;
     let HARD_CAP;
@@ -25,17 +27,20 @@ contract("Crowdsale", function(accounts){
         await advanceBlock();
 
         instance = await Crowdsale.deployed();
-        token = await CustomToken.deployed();
-        totalSupply = await token.totalSupply.call();
-        decimals = await token.decimals.call();
+        customToken = await CustomToken.deployed();
+        members = await Members.deployed();
+        vestingTokens = await VestingTokens.deployed();
+
+        totalSupply = await customToken.totalSupply.call();
+        decimals = await customToken.decimals.call();
         HARD_CAP = await instance.HARD_CAP.call();
         SOFT_CAP = await instance.SOFT_CAP.call();
         SALE_START_TIME = await instance.SALE_START_TIME.call();
         SALE_END_TIME = await instance.SALE_END_TIME.call();
         await advanceBlock();
 
-        let balance = await token.balanceOf(accounts[0]);
-        token.transfer(instance.address, balance).should.be.fulfilled;
+        let balance = await customToken.balanceOf(accounts[0]);
+        customToken.transfer(instance.address, balance).should.be.fulfilled;
     })
     // 0 => owner
     // 0 ~ 3 => dev 14%
@@ -48,21 +53,40 @@ contract("Crowdsale", function(accounts){
             instance.addWhitelist(accounts[i], web3.toWei(300, 'ether'));
         }
     });
-    it("should add priv, adv, dev", async () => {
-        for(let i = 0; i < 4; i++){
+    it("shouldn't set before setting crowdsale to members", async () => {
+        await instance.setToDevelopers(accounts[0], web3.toWei(1.5 * 1000**3, 'ether')).should.be.rejectedWith('revert');
+        await members.setCrowdsale(instance.address).should.be.fulfilled;
+        instance.setToDevelopers(accounts[0], web3.toWei(1.5 * 1000**3, 'ether')).should.be.fulfilled;
+    });
+    it("should add priv, adv, dev", async () => {// not yet fill all tokens
+        for(let i = 1; i < 4; i++){ 
             instance.setToDevelopers(accounts[i], web3.toWei(3.5 * 1000**3, 'ether')).should.be.fulfilled;
         }
-        for(let i = 60; i < 65; i++){
+        instance.setToAdvisors(accounts[60], web3.toWei(0.5 * 1000*3, 'ether')).should.be.fulfilled;
+        for(let i = 61; i < 65; i++){
             instance.setToAdvisors(accounts[i], web3.toWei(1000*3, 'ether')).should.be.fulfilled;
         }
-        for(let i = 65; i < 85; i++){
+        instance.setToPrivateSale(accounts[65], web3.toWei(0.5 * 1000*3, 'ether')).should.be.fulfilled;
+        for(let i = 66; i < 85; i++){
             instance.setToPrivateSale(accounts[i], web3.toWei(1000*3, 'ether')).should.be.fulfilled;
         }
     });
+    it("shouldn't duplicate enrollment", async () =>{
+        await instance.setToDevelopers(accounts[62], web3.toWei(2 * 1000**3, 'ether')).should.be.rejectedWith('revert');
+        instance.setToDevelopers(accounts[0], web3.toWei(2 * 1000**3, 'ether')).should.be.fulfilled;
+        await instance.setToAdvisors(accounts[3], web3.toWei(0.5 * 1000**3, 'ether')).should.be.rejectedWith('revert');
+        instance.setToAdvisors(accounts[60], web3.toWei(0.5 * 1000**3, 'ether')).should.be.fulfilled;
+        await instance.setToPrivateSale(accounts[63], web3.toWei(0.5 * 1000**3, 'ether')).should.be.rejectedWith('revert');
+        instance.setToPrivateSale(accounts[65], web3.toWei(0.5 * 1000**3, 'ether')).should.be.fulfilled;
+    });
     it("should be activated", async () =>{
-        await instance.activeSale();
+        await instance.setVestingTokens(vestingTokens.address).should.be.fulfilled;
+        await instance.activeSale().should.be.fulfilled;
         increaseTimeTo(START_TIME);
     });
+
+    
+    // We have to seperate discount case
     it("should receive 100*49 ether", async () => {
         for(let i= 10; i < 59; i++){
             instance.sendTransaction({from : accounts[i], value : web3.toWei(100, 'ether')}).should.be.fulfilled;

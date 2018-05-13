@@ -1,6 +1,7 @@
 pragma solidity ^0.4.23;
 
 import "../token/VestingTokens.sol";
+import "../ownership/Members.sol";
 
 contract ICrowdsale{
     /* Funcitons */
@@ -27,6 +28,7 @@ contract ICrowdsale{
     function activeRefund() public;
 
     /* Token Purchase Functions */
+    function () external payable;
     function buyTokens(address _beneficiary) public payable;
     function _addToUserContributed(address _address, uint _amount, uint _additionalAmount) private;
     function receiveTokens() public;
@@ -34,11 +36,12 @@ contract ICrowdsale{
     
     /* Set Functions */
     function setVestingTokens(address _vestingTokensAddress) public;
+    function addWhitelist(address _whitelist, uint _maxcap) public;
 
     function setToDevelopers(address _address, uint _amount) public;
     function setToAdvisors(address _address, uint _amount) public;
     function setToPrivateSale(address _address, uint _amount) public;
-    //function addToUserContributed
+    function _isEnrollmentDuplicated(address _address, Members.MEMBER_LEVEL _level) private returns(bool);
 
     /* Finalizing Functions */
     function _finish() private;
