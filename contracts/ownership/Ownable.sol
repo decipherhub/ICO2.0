@@ -52,20 +52,4 @@ contract Ownable {
             return members.transferOwnership(newOwner);
     }
 
-    function enroll_presale(address account) public
-        //only(crowdsale_address) { // FIXIT: is it possible?
-    {
-        return members.enroll_presale(account);
-    }
-
-    function enroll_developer(address dev_addr) public
-        onlyOwner {
-            return members.enroll_developer(dev_addr);
-    }
-
-    function delete_developer(address dev_addr) public
-        onlyOwner {
-            return members.delete_developer(dev_addr);
-    }
-
 }

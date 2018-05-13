@@ -398,15 +398,14 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                 mPrivateSale[_address] = _tokenWeiAmount;
                 mPrivateSaleIndex.push(_address);
                 members.enroll_privsale(_address);
-            }
-            
+            } 
     }
     function _isEnrollmentDuplicated(
         address _address,
         Members.MEMBER_LEVEL _level
         ) private
         returns(bool){
-            Members.MEMBER_LEVEL level = members.mMemberLevel[_address];
+            Members.MEMBER_LEVEL level = members.mMemberLevel(_address);
             if(level == Members.MEMBER_LEVEL.NONE || level == _level){
                 // left means trying update
                 // right means trying enrollment first time
