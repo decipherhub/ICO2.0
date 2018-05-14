@@ -6,6 +6,7 @@ const VestingTokens = artifacts.require("./VestingTokens.sol");
 const SafeMath = artifacts.require("./SafeMath.sol");
 
 module.exports = async function(deployer, network, accounts){
+    console.log("Deploying VotingFactory", accounts[0]);
     deployer.deploy(SafeMath);
     deployer.link(SafeMath, VotingFactory);
 
@@ -19,5 +20,5 @@ module.exports = async function(deployer, network, accounts){
         _fund.address,
         _vestingTokens.address,
         _members.address,
-        {from: accounts[0], gasLimit: 50000000});
+        {from: accounts[0], gasLimit: 5000000});
 }

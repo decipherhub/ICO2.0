@@ -6,7 +6,7 @@ import "../lib/SafeMath.sol";
 import "../lib/Param.sol";
 import "../ownership/Ownable.sol";
 import "../token/VestingTokens.sol";
-import "./ICrowdsale.sol";
+// import "./ICrowdsale.sol";
 /**
  * @title Crowdsale
  * @dev Crowdsale is a base contract for managing a token crowdsale.
@@ -17,10 +17,10 @@ import "./ICrowdsale.sol";
  * minted as contributions arrive, note that the crowdsale contract
  * must be owner of the token in order to be able to mint it.
  */
-contract Crowdsale is Ownable, ICrowdsale, Param {
+contract Crowdsale is Ownable, Param {
+    enum STATE {PREPARE, ACTIVE, FINISHED, FINALIZED, REFUND}
     /* Library and Typedefs */
     using SafeMath for uint256;
-    enum STATE {PREPARE, ACTIVE, FINISHED, FINALIZED, REFUND}
     struct Purchase{
         uint ethers;
         uint tokens;
@@ -31,40 +31,40 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     }
 
     /* Global Variables */
-    CustomToken public mToken; //address
-    Fund public mFund; // ether bank, it should be Fund.sol's Contract address
-    VestingTokens public mVestingTokens;
+    CustomToken mToken; //address
+    Fund mFund; // ether bank, it should be Fund.sol's Contract address
+    VestingTokens mVestingTokens;
 
-    uint public mCurrentAmount; //ether amount
+    uint mCurrentAmount; //ether amount
     uint public mContributedTokens = 0;
     // discount rate -20%(~1/8) => -15%(~2/8) => -10%(~3/8) => -5%(~4/8) => 0%(~8/8)
     // cap is ratio of tokens, discount rate is of ethers
-    uint public mCurrentDiscountPerc = 20; //inital discount rate
+    uint8 public mCurrentDiscountPerc = 20; //inital discount rate
     STATE mCurrentState = STATE.PREPARE;
 
     // index => address => amount set of crowdsale participants
     mapping(address => Whitelist) public mWhitelist;
-    mapping(address => uint) public mPrivateSale;
-    mapping(address => uint) public mDevelopers;
-    mapping(address => uint) public mAdvisors;
+    mapping(address => uint) mPrivateSale;
+    mapping(address => uint) mDevelopers;
+    mapping(address => uint) mAdvisors;
     mapping(address => Purchase) public mContributors;
-    address[] public mPrivateSaleIndex;
-    address[] public mDevelopersIndex;
-    address[] public mAdvisorsIndex;
+    address[] mPrivateSaleIndex;
+    address[] mDevelopersIndex;
+    address[] mAdvisorsIndex;
 
 
 
     /* Events */
     event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 wei_amount, uint256 token_amount);
     event EtherChanges(address indexed purchaser, uint value); // send back ETH changes
-    event StateChanged(string state, uint time);
+    event StateChanged(STATE state, uint time);
     event RefundEthers(address indexed _receiver, uint _ethers);
 
 
 
     /* Modifiers */
     modifier period(STATE _state) {
-        require(mCurrentState == _state, "Crowdsale Period is not matching");
+        require(mCurrentState == _state);
         _;
     }
 
@@ -88,23 +88,23 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
 
 
     /* View Function */
-    function getStartTime() view public returns(uint256) { return SALE_START_TIME; }
-    function getEndTime() view public returns(uint256) { return SALE_END_TIME; }
-    function getFundingGoal() view public returns(uint256) { return HARD_CAP; }
+    function getStartTime() pure external returns(uint256) { return SALE_START_TIME; }
+    function getEndTime() pure external returns(uint256) { return SALE_END_TIME; }
+    function getFundingGoal() pure external returns(uint256) { return HARD_CAP; }
     function getCurrentSate() view external
-        returns(string){
+        returns(STATE){
             if(mCurrentState == STATE.PREPARE){
-                return "PREPARE";
+                return STATE.PREPARE;
             } else if(mCurrentState == STATE.ACTIVE){
-                return "ACTIVE";
+                return STATE.ACTIVE;
             } else if(mCurrentState == STATE.FINISHED){
-                return "FINISHED";
+                return STATE.FINISHED;
             } else if(mCurrentState == STATE.FINALIZED){
-                return "FINALIZED";
+                return STATE.FINALIZED;
             } else if(mCurrentState == STATE.REFUND){
-                return "REFUND";
+                return STATE.REFUND;
             } else
-                return "SOMETHING WORNG";
+                revert();
     }
     // get current rate including the dicount percentage
     function getRate() public view 
@@ -120,11 +120,10 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     // Override this with custom calculation
     function getNextCap() public view 
         returns(uint){
-            require(mCurrentDiscountPerc > 0, "No Discount Any More");
+            require(mCurrentDiscountPerc > 0);
             return HARD_CAP.mul(5 - mCurrentDiscountPerc/5).div(8);
     }
 
-    function getCurrentAmount() view public returns(uint256) { return mCurrentAmount; }
     //divide type and check amount of current locked tokens
     function getLockedAmount(VestingTokens.LOCK_TYPE _type) view public 
         returns(uint256){
@@ -144,18 +143,31 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                     sum += mPrivateSale[mPrivateSaleIndex[i]];
                 }
             } else
-                revert("Wrong Type");
+                revert();
 
             return sum;
     }
+    function getPersonalLockedAmount(address _address, VestingTokens.LOCK_TYPE _type) view public 
+        returns(uint256){
+            require(_address != address(0));
+
+            if(_type == VestingTokens.LOCK_TYPE.DEV){
+                return mDevelopers[_address];
+            } else if(_type == VestingTokens.LOCK_TYPE.ADV){
+                return mAdvisors[_address];
+            } else if(_type == VestingTokens.LOCK_TYPE.PRIV){
+                return mPrivateSale[_address];
+            } else
+                revert();
+    }
     // Business logic could be described here or getRate()
-    function getTokenAmount(uint256 weiAmount) internal view 
+    function _getTokenAmount(uint256 weiAmount) internal view 
         returns (uint256) {
             return weiAmount.mul(getRate());
     }
 
     // function which checks the amount would be over next cap
-    function isOver() public view 
+    function _isOver() private view 
         returns(bool){
             if(mCurrentDiscountPerc == 0){
                 if(address(this).balance >= HARD_CAP){
@@ -175,15 +187,15 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
         returns(bool){
             uint currentLockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.DEV);
             if(currentLockedAmount < mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC)){
-                revert("Developers Not Filled : "); // FIXIT:  +mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC).sub(currentLockedAmount));
+                revert(); // FIXIT:  +mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC).sub(currentLockedAmount));
             }
             currentLockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.ADV);
             if(currentLockedAmount < mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC)){
-                revert("Advisors Not Filled : "); // FIXIT:  +mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC).sub(currentLockedAmount));
+                revert(); // FIXIT:  +mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC).sub(currentLockedAmount));
             }
             currentLockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.PRIV);
             if(currentLockedAmount < mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC)){
-                revert("PrivateSale Not Filled : "); // FIXIT:  +mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC).sub(currentLockedAmount));
+                revert(); // FIXIT:  +mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC).sub(currentLockedAmount));
             }
             return true;
     }
@@ -191,29 +203,29 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
 
 
     /* Change CrowdSale State, call only once */
-    function activateSale() public 
+    function activateSale() external 
         onlyOwner period(STATE.PREPARE){
-            require(now >= SALE_START_TIME && now < SALE_END_TIME, "Worng Time");
+            require(now >= SALE_START_TIME && now < SALE_END_TIME);
             require(mVestingTokens != address(0));
             require(mToken.balanceOf(address(this)) == mToken.totalSupply());
 
             mCurrentState = STATE.ACTIVE;
             mFund.startSale(); // tell crowdsale started
-            emit StateChanged("ACTIVE", now);
+            emit StateChanged(STATE.ACTIVE, now);
     }
-    function finishSale() public 
+    function finishSale() external 
         onlyOwner period(STATE.ACTIVE){
             require(now >= SALE_END_TIME);
             require(address(this).balance >= SOFT_CAP);
             _finish();
     }
-    function finalizeSale() public
+    function finalizeSale() external
         onlyOwner period(STATE.FINISHED) {
             _finalize();
             mCurrentState = STATE.FINALIZED;
-            emit StateChanged("FINALIZED", now);
+            emit StateChanged(STATE.FINALIZED, now);
     }
-    function activeRefund() public
+    function activeRefund() external
         period(STATE.ACTIVE){
             require(now >= SALE_END_TIME);
             require(address(this).balance < SOFT_CAP);
@@ -241,8 +253,8 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             require(mWhitelist[_beneficiary].maxcap >= mContributors[_beneficiary].ethers.add(weiAmount));
             // calculate token amount to be created
             uint tokens;
-            if(!isOver()){ //check if estimate ether exceeds next cap
-                tokens = getTokenAmount(weiAmount);
+            if(!_isOver()){ //check if estimate ether exceeds next cap
+                tokens = _getTokenAmount(weiAmount);
                 emit TokenPurchase(msg.sender, _beneficiary, weiAmount, tokens);
             } else{
                 //when estimate ether exceeds next cap
@@ -253,18 +265,20 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                     // When discount rate should be changed
                     ether2 = address(this).balance.sub(getNextCap()); //(balance + weiAmount) - NEXT_CAP
                     ether1 = weiAmount.sub(ether2);
-                    tokens = getTokenAmount(ether1);
+                    tokens = _getTokenAmount(ether1);
                     emit TokenPurchase(msg.sender, _beneficiary, ether1, tokens);
 
-                    mCurrentDiscountPerc = mCurrentDiscountPerc.sub(5); // Update discount percentage
-                    uint additionalTokens = getTokenAmount(ether2);
+                    uint8 temp = mCurrentDiscountPerc - 5;
+                    require(temp < mCurrentDiscountPerc);
+                    mCurrentDiscountPerc = temp; // Update discount percentage
+                    uint additionalTokens = _getTokenAmount(ether2);
                     emit TokenPurchase(msg.sender, _beneficiary, ether2, additionalTokens);
                     tokens = tokens.add(additionalTokens);
                 } else if(mCurrentDiscountPerc == 0){
                     // Do when CrowdSale Ended
                     ether2 = address(this).balance.sub(HARD_CAP);
                     ether1 = weiAmount.sub(ether2);
-                    tokens = getTokenAmount(ether1);
+                    tokens = _getTokenAmount(ether1);
 
                     emit TokenPurchase(msg.sender, _beneficiary, ether1, tokens);
                     msg.sender.transfer(ether2); //pay back
@@ -275,7 +289,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                     //finalize CrowdSale
                     return;
                 } else{
-                    revert("DiscountRate should be positive");
+                    revert();
                 }
             }
             //add to map
@@ -291,14 +305,14 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             
             mContributedTokens += _additionalToken;
     }
-    function receiveTokens() public 
+    function receiveTokens() external 
         period(STATE.FINALIZED){
             require(mContributors[msg.sender].tokens > 0);
             mToken.transfer(msg.sender, mContributors[msg.sender].tokens);
             delete mContributors[msg.sender];
     }
 
-    function refund() public 
+    function refund() external 
         period(STATE.REFUND){
             require(mContributors[msg.sender].ethers > 0);
             uint ethers = mContributors[msg.sender].ethers;
@@ -311,12 +325,12 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
 
     /* Set Functions */
     //setting vesting token address only once
-    function setVestingTokens(address _vestingTokensAddress) public 
+    function setVestingTokens(address _vestingTokensAddress) external 
         onlyOwner period(STATE.PREPARE) {
             require(mVestingTokens == address(0)); //only once
             mVestingTokens = VestingTokens(_vestingTokensAddress);
     }
-    function addWhitelist(address _whitelist, uint _maxcap) public onlyOwner{
+    function addWhitelist(address _whitelist, uint _maxcap) external onlyOwner{
         require(mCurrentState < STATE.FINISHED);
         mWhitelist[_whitelist].isListed = true;
         mWhitelist[_whitelist].maxcap = _maxcap;
@@ -329,12 +343,12 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
         There are some duplicated check code
     */
 
-    function setToDevelopers(address _address, uint _tokenWeiAmount) public 
+    function setToDevelopers(address _address, uint _tokenWeiAmount) external 
         onlyOwner{
             require(_address != address(0));
-            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.DEV), "Enrollment Duplicated!");
+            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.DEV));
             uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.DEV).add(_tokenWeiAmount);
-            require(lockedAmount <= mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC), "Over!");
+            require(lockedAmount <= mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC));
             // Solidity will roll back when it reverted
             // check already included
             if(mDevelopers[_address] > 0){
@@ -344,7 +358,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                 }
             } else{
                 if(_tokenWeiAmount == 0){   // if input == 0 => revert
-                    revert("don't set 0 at first");
+                    revert();
                 }
                 // add members
                 mDevelopers[_address] = _tokenWeiAmount;
@@ -353,12 +367,12 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             }
             
     }
-    function setToAdvisors(address _address, uint _tokenWeiAmount) public 
+    function setToAdvisors(address _address, uint _tokenWeiAmount) external 
         onlyOwner{
             require(_address != address(0));
-            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.ADV), "Enrollment Duplicated!");
+            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.ADV));
             uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.ADV).add(_tokenWeiAmount);
-            require(lockedAmount <= mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC), "Over!");
+            require(lockedAmount <= mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC));
             // Solidity will roll back when it reverted
             // check already included
             if(mAdvisors[_address] > 0){
@@ -368,7 +382,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                 }
             } else{
                 if(_tokenWeiAmount == 0){   // if input == 0 => revert
-                    revert("don't set 0 at first");
+                    revert();
                 }
                 // add members
                 mAdvisors[_address] = _tokenWeiAmount;
@@ -377,12 +391,12 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             }
             
     }
-    function setToPrivateSale(address _address, uint _tokenWeiAmount) public 
+    function setToPrivateSale(address _address, uint _tokenWeiAmount) external 
         onlyOwner{
             require(_address != address(0));
-            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.PRIV), "Enrollment Duplicated!");
+            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.PRIV));
             uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.PRIV).add(_tokenWeiAmount);
-            require(lockedAmount <= mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC), "Over!");
+            require(lockedAmount <= mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC));
             // Solidity will roll back when it reverted
             // check already included
             if(mPrivateSale[_address] > 0){
@@ -392,7 +406,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                 }
             } else{
                 if(_tokenWeiAmount == 0){   // if input == 0 => revert
-                    revert("don't set 0 at first");
+                    revert();
                 }
                 // add members
                 mPrivateSale[_address] = _tokenWeiAmount;
@@ -403,7 +417,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function _isEnrollmentDuplicated(
         address _address,
         Members.MEMBER_LEVEL _level
-        ) private
+        ) private view
         returns(bool){
             Members.MEMBER_LEVEL level = members.mMemberLevel(_address);
             if(level == Members.MEMBER_LEVEL.NONE || level == _level){
@@ -423,7 +437,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function _finish() private 
         period(STATE.ACTIVE){
             mCurrentState = STATE.FINISHED;
-            emit StateChanged("FINISHED", now);
+            emit StateChanged(STATE.FINISHED, now);
     }
     function _finalize() private {
             //lock up tokens
@@ -433,7 +447,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             //give initial fund
             _forwardFunds();
             mFund.finalizeSale();
-            _dividePool();
+            mFund.dividePoolAfterSale([PUB_TOKEN_PERC, INCENTIVE_TOKEN_PERC, RESERVE_TOKEN_PERC]);
             //Refund vote activate
             //set tapVoting available
             //change state
@@ -480,10 +494,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function _forwardFunds() private 
         returns (bool){
             address(mFund).transfer(address(this).balance); //send ether
-            mToken.transfer(mFund, mToken.totalSupply().div(1000).mul(RESERVE_TOKEN_PERC+REWARD_TOKEN_PERC+INCENTIVE_TOKEN_PERC)); //send tokens
+            mToken.transfer(mFund, mToken.totalSupply().div(1000).mul(RESERVE_TOKEN_PERC+INCENTIVE_TOKEN_PERC)); //send tokens
             return true;
-    }
-    function _dividePool() internal {
-            mFund.dividePoolAfterSale([PUB_TOKEN_PERC, INCENTIVE_TOKEN_PERC, RESERVE_TOKEN_PERC]);
     }
 }

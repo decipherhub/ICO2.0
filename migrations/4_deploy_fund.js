@@ -7,7 +7,7 @@ const Fund = artifacts.require("./Fund.sol");
 module.exports = async function(deployer, network, accounts) {
 
     deployer.link(SafeMath, Fund);
-    //deployer.deploy(Fund, token, teamWallet, membersAddress, {from: accounts[0], gasLimit: 50000000});
+    //deployer.deploy(Fund, token, teamWallet, membersAddress, {from: accounts[0], gasLimit: 5000000});
     const _token = await CustomToken.deployed();
     const _teamWallet = await accounts[4];
     const _members = await Members.deployed();
@@ -17,5 +17,5 @@ module.exports = async function(deployer, network, accounts) {
         _token.address,
         _teamWallet,
         _members.address,
-        {from: accounts[0], gasLimit: 7000000});
+        {from: accounts[0], gasLimit: 5000000});
 };

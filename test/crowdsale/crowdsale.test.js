@@ -4,6 +4,8 @@ import { advanceBlock } from 'openzeppelin-solidity/test/helpers/advanceToBlock'
 const CustomToken = artifacts.require("CustomToken");
 const Crowdsale = artifacts.require("Crowdsale");
 const VestingTokens = artifacts.require("VestingTokens");
+const Fund = artifacts.require("Fund");
+const Members = artifacts.require("Members");
 
 const BigNumber = web3.BigNumber;
 
@@ -27,6 +29,13 @@ contract("Crowdsale", function(accounts){
 
         instance = await Crowdsale.deployed();
         token = await CustomToken.deployed();
+        members = await Members.deployed();
+        // fund = await Fund.deployed();
+        // fund.createIncentivePool().should.be.fulfilled;
+        // fund.createReservePool().should.be.fulfilled;
+        members.enroll_developer(accounts[1], {from : accounts[0]}).should.be.fulfilled; //developer_1
+        members.enroll_developer(accounts[2], {from : accounts[0]}).should.be.fulfilled; //developer_2
+        members.enroll_developer(accounts[3], {from : accounts[0]}).should.be.fulfilled; //developer_3
         totalSupply = await token.totalSupply.call();
         decimals = await token.decimals.call();
         HARD_CAP = await instance.HARD_CAP.call();

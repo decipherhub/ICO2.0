@@ -27,11 +27,6 @@ contract Ownable {
         _;
     }
 
-    modifier notDevelopers() {
-        require(!members.isDeveloper(msg.sender), "You are developer");
-        _;
-    }
-
     function isOwner(address account) public view
         returns(bool) {
             return (account == members.owner());
@@ -45,11 +40,6 @@ contract Ownable {
     function isLockedGroup(address account) public view
         returns(bool) {
             return members.isLockedGroup(account);
-    }
-
-    function transferOwnership(address newOwner) public
-        onlyOwner {
-            return members.transferOwnership(newOwner);
     }
 
 }
