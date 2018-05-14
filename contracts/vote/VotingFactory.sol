@@ -3,7 +3,7 @@
  */
 pragma solidity ^0.4.23;
 
-import "../token/IERC20.sol";
+import "../token/CustomToken.sol";
 import "../fund/Fund.sol";
 import "./BaseVoting.sol";
 import "./TapVoting.sol";
@@ -25,18 +25,18 @@ contract VotingFactory is Ownable, Param {
     }
 
     /* Global Variables */
-    IERC20 public mToken;
-    Fund public mFund;
+    CustomToken mToken;
+    Fund mFund;
     mapping(address => voteInfo) mVoteList; // {vote name => {voteAddress, voteType}}
     TapVoting public mTapVoting;
     RefundVoting public mRefundVoting;
-    TapVoting public NULL_TapVoting;
-    RefundVoting public NULL_RefundVoting;
-    uint256 public mTapRound;
-    uint256 public mRefundRound;
-    VestingTokens public mVestingTokens;
+    TapVoting NULL_TapVoting;
+    RefundVoting NULL_RefundVoting;
+    uint256 mTapRound;
+    uint256 mRefundRound;
+    VestingTokens mVestingTokens;
 
-    bool public switch__isTapVotingOpened = false;
+    bool switch__isTapVotingOpened = false;
 
 
     /* Events */
@@ -67,7 +67,7 @@ contract VotingFactory is Ownable, Param {
             require(_membersAddress != address(0));
             require(_vestingTokensAddress != address(0));
 
-            mToken = IERC20(_tokenAddress);
+            mToken = CustomToken(_tokenAddress);
             mFund = Fund(_fundAddress);
             mTapRound = 1;
             mRefundRound = 1;

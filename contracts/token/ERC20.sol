@@ -2,7 +2,6 @@ pragma solidity ^0.4.23;
 
 import "../lib/SafeMath.sol";
 import "../lib/Param.sol";
-import "../ownership/Ownable.sol";
 import "./IERC20.sol";
 
 contract ERC20 is IERC20, Param {
@@ -16,7 +15,7 @@ contract ERC20 is IERC20, Param {
     mapping(address => uint256) balances;
     mapping (address => mapping (address => uint256)) internal allowed;
 
-	 address public owner;
+	address public owner;
 
     /* Constructor */
     constructor()

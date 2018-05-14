@@ -18,11 +18,11 @@ contract LockedTokens is Param {
         bool released;
     }
 
-    IERC20 public mToken;
-    address public mCrowdsaleAddress;
-    Fund public mFund;
+    IERC20 mToken;
+    address mCrowdsaleAddress;
+    Fund mFund;
     mapping(address => Tokens[]) public mWalletTokens;
-    bool public workable = true;
+    bool workable = true;
 
     event TokensLocked(address indexed _to, uint256 _value, uint256 _lockEndTime);
     event TokensUnlocked(address indexed _to, uint256 _value);

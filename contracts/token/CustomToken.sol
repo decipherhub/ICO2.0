@@ -3,7 +3,6 @@
 pragma solidity ^0.4.23;
 
 import "./BaseToken.sol";
-import "../ownership/Ownable.sol";
 
 contract CustomToken is BaseToken{
     constructor() public

@@ -24,29 +24,29 @@ contract BaseVoting is Ownable, Param {
     }
 
     /* Global Variables */
-    string public mVotingName;
+    string mVotingName;
     VOTE_PERIOD mPeriod;
-    ERC20 public mToken;
-    Fund public mFund;
-    VestingTokens public mVestingTokens;
-    address public mFactoryAddress;
+    ERC20 mToken;
+    Fund mFund;
+    VestingTokens mVestingTokens;
+    address mFactoryAddress;
 
-    uint public minVotePerc;
+    uint minVotePerc;
 
-    uint256 public startTime;
-    uint256 public endTime;
-    uint256 public agree_power = 0; // real value is divided by 100(weight)
-    uint256 public disagree_power = 0;
-    uint256 public agree_count = 0;
-    uint256 public disagree_count = 0;
+    uint256 startTime;
+    uint256 endTime;
+    uint256 agree_power = 0; // real value is divided by 100(weight)
+    uint256 disagree_power = 0;
+    uint256 agree_count = 0;
+    uint256 disagree_count = 0;
 
     mapping(address => vote_receipt) public party_dict;
     address[] public party_list;
     address[] public public_party_list; //withhold
     address[] public locked_party_list; //withhold
 
-    bool public isAvailable = true;
-    uint256 public discardTime;
+    bool isAvailable = true;
+    uint256 discardTime;
 
     /* Events */
     event InitializeVote(address indexed vote_account, string indexed voting_name, uint256 startTime, uint256 endTime);

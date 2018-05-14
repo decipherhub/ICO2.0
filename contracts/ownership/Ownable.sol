@@ -14,16 +14,16 @@ contract Ownable {
     /*MODIFIER*/
     modifier only(address account) {
         require(msg.sender != 0x0);
-        require(msg.sender == account, "caller is not given address");
+        require(msg.sender == account);
         _;
     }
     modifier onlyOwner() {
-        require(msg.sender == members.owner(), "Not Owner");
+        require(msg.sender == members.owner());
         _;
     }
 
     modifier onlyDevelopers() {
-        require(members.isDeveloper(msg.sender), "Not Developers");
+        require(members.isDeveloper(msg.sender));
         _;
     }
 

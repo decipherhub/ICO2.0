@@ -9,7 +9,7 @@ module.exports = async function(deployer, network, accounts) {
     deployer.link(SafeMath, Fund);
     //deployer.deploy(Fund, token, teamWallet, membersAddress, {from: accounts[0], gasLimit: 5000000});
     const _token = await CustomToken.deployed();
-    const _teamWallet = await accounts[4];
+    const _teamWallet = accounts[4];
     const _members = await Members.deployed();
     console.log("Deploying Fund", _token.address, _teamWallet, _members.address);
 
@@ -17,5 +17,5 @@ module.exports = async function(deployer, network, accounts) {
         _token.address,
         _teamWallet,
         _members.address,
-        {from: accounts[0], gasLimit: 5000000});
+        {from: accounts[0], gasLimit: 10000000});
 };
