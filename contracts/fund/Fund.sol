@@ -6,12 +6,10 @@ pragma solidity ^0.4.23;
 
 import "../fund/IncentivePool.sol";
 import "../fund/ReservePool.sol";
-import "../token/ERC20.sol";
-import "../token/IERC20.sol";
-import "../token/VestingTokens.sol";
-import "../crowdsale/Crowdsale.sol";
+import "../token/ICustomToken.sol";
+import "../token/IVestingTokens.sol";
+import "../crowdsale/ICrowdsale.sol";
 import "../ownership/Ownable.sol";
-import "../ownership/Members.sol";
 import "../vote/VotingFactory.sol";
 import "../vote/TapVoting.sol";
 import "../vote/RefundVoting.sol";
@@ -32,8 +30,8 @@ contract Fund is Ownable, Param {
     /* Global Variables */
     // totalEther = [contract_account].balance
     FUNDSTATE public state;
-    ERC20 public token;
-    VestingTokens public vestingTokens;
+    ICustomToken public token;
+    IVestingTokens public vestingTokens;
     address public teamWallet; // no restriction for withdrawing
     uint256 public tap;
     uint256 public lastWithdrawTime;
@@ -42,7 +40,7 @@ contract Fund is Ownable, Param {
     bool private switch__dividePoolAfterSale = false;
     bool private switch__lock_fund = false;
 
-    Crowdsale public crowdsale;
+    ICrowdsale public crowdsale;
     VotingFactory public votingFactory;
     TapVoting public tapVoting;
     RefundVoting public refundVoting;
@@ -77,6 +75,8 @@ contract Fund is Ownable, Param {
 
     /* Events */
     event CreateFund(address indexed token_address, address indexed team_wallet, address indexed fund_addr);
+    event SetIncentivePoolAddress(address indexed inc_pool_addr, address indexed setter);
+    event SetReservePoolAddress(address indexed res_pool_addr, address indexed setter);
     event SetVotingFactoryAddress(address indexed voting_factory_addr, address indexed setter);
     event SetCrowdsaleAddress(address indexed voting_factory_addr, address indexed setter);
     event SetVestingTokensAddress(address indexed vesting_tokens_addr, address indexed setter);
@@ -94,29 +94,22 @@ contract Fund is Ownable, Param {
         address _token,
         address _teamWallet,
         address _membersAddress
-        ) public Ownable(_membersAddress) {
-            require(!switch__constructor);
+        ) public {
+           /* require(!switch__constructor);
             require(_token != 0x0);
             require(_teamWallet != 0x0);
             require(_membersAddress != 0x0);
+            
             switch__constructor = true;
-            _constructor(_token, _teamWallet, _membersAddress);
-    }
-    function _constructor(
-        address _token,
-        address _teamWallet,
-        address _membersAddress
-    ) private {
             state = FUNDSTATE.BEFORE_SALE;
-            // setFundAddress(address(this)); //FIXIT: set fund address in Members.fundAddress
-            token = ERC20(_token);
+            token = ICustomToken(_token);
             teamWallet = _teamWallet;
-            inc_pool = new IncentivePool(address(token), address(this), _membersAddress);
-            res_pool = new ReservePool(address(token), address(this), teamWallet, _membersAddress);
+            members = IMembers(_membersAddress);
             tap = INITIAL_TAP;
             lastWithdrawTime = now;
             emit CreateFund(token, teamWallet, address(this));
-    }
+    */
+            }
     /* View Function */
     function getVestingRate() view public //FIXIT: is it needed?
         returns(uint256) {
@@ -136,8 +129,8 @@ contract Fund is Ownable, Param {
     }
 
     function getToken() view public
-        returns(IERC20) {
-            return token;
+        returns(address) {
+            return address(token);
     }
 
     function getTeamWallet() view public
@@ -176,6 +169,28 @@ contract Fund is Ownable, Param {
     }
 
     /* Set Function */
+    function setIncentivePoolAddress(address _addr) external
+        onlyDevelopers
+        unlock
+        returns(bool) {
+            require(_addr != 0x0);
+            require(address(inc_pool) == 0x0, "should call only once");
+
+            inc_pool = new IncentivePool(address(token), address(this), address(members));
+            emit SetIncentivePoolAddress(_addr, msg.sender);
+            return true;
+    }
+    function setReservePoolAddress(address _addr) external
+        onlyDevelopers
+        unlock
+        returns(bool) {
+            require(_addr != 0x0);
+            require(address(res_pool) == 0x0, "should call only once");
+
+            res_pool = new ReservePool(address(token), address(this), teamWallet, address(members));
+            emit SetReservePoolAddress(_addr, msg.sender);
+            return true;
+    }
     function setVotingFactoryAddress(address _votingfacaddr) external
         onlyDevelopers
         unlock
@@ -195,7 +210,7 @@ contract Fund is Ownable, Param {
             require(_crowdsale != 0x0);
             require(address(crowdsale) == 0x0, "should call only once");
 
-            crowdsale = Crowdsale(_crowdsale);
+            crowdsale = ICrowdsale(_crowdsale);
             emit SetCrowdsaleAddress(_crowdsale, msg.sender);
             return true;
     }
@@ -207,7 +222,7 @@ contract Fund is Ownable, Param {
             require(_vestingTokensAddr != 0x0);
             require(address(vestingTokens) == 0x0, "should call only once");
 
-            vestingTokens = VestingTokens(_vestingTokensAddr);
+            vestingTokens = IVestingTokens(_vestingTokensAddr);
             emit SetVestingTokensAddress(_vestingTokensAddr, msg.sender);
             return true;
     }

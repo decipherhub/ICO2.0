@@ -6,7 +6,6 @@ const VestingTokens = artifacts.require("./VestingTokens.sol");
 const SafeMath = artifacts.require("./SafeMath.sol");
 
 module.exports = async function(deployer, network, accounts){
-    deployer.deploy(SafeMath);
     deployer.link(SafeMath, VotingFactory);
 
     const _token = await CustomToken.deployed();

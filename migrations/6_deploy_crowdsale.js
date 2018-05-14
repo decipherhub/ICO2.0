@@ -5,7 +5,6 @@ const Fund = artifacts.require("./Fund.sol");
 const Members = artifacts.require("./Members.sol");
 
 module.exports = async function(deployer, network, accounts){
-    deployer.deploy(SafeMath);
     deployer.link(SafeMath, Crowdsale);
 
     const _token = await CustomToken.deployed();
