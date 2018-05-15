@@ -3,6 +3,7 @@ pragma solidity ^0.4.23;
 import "../lib/SafeMath.sol";
 import "../lib/Param.sol";
 import "./IERC20.sol";
+import "./ILockedTokens.sol";
 import "../fund/Fund.sol";
 
 
@@ -10,7 +11,8 @@ import "../fund/Fund.sol";
  * @title LockedTokens
  * @dev Lock tokens for certain period of time
  */
-contract LockedTokens is Param {
+contract LockedTokens is ILockedTokens, Param {
+    using SafeMath for uint256;
     struct Tokens {
         uint256 amount;
         uint256 lockEndTime;
@@ -23,8 +25,6 @@ contract LockedTokens is Param {
     mapping(address => Tokens[]) public mWalletTokens;
     bool workable = true;
 
-    event TokensLocked(address indexed _to, uint256 _value, uint256 _lockEndTime);
-    event TokensUnlocked(address indexed _to, uint256 _value);
 
     modifier available {
         require(workable);

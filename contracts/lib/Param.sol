@@ -4,7 +4,7 @@ pragma solidity ^0.4.23;
 import "../lib/SafeMath.sol";
 import "../lib/Sqrt.sol";
 
-library Param {
+contract Param {
     using SafeMath for uint256;
     using Sqrt for uint256;
     /* Token */

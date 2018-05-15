@@ -1,14 +1,12 @@
 pragma solidity ^0.4.23;
 
 import "./ERC20.sol";
-import "../lib/SafeMath.sol";
+import "../token/IBaseToken.sol";
 
 // from https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/token/ERC20/StandardBurnableToken.sol
 
-contract BaseToken is ERC20 {
+contract BaseToken is IBaseToken, ERC20 {
     
-    event Burn(address indexed burner, uint256 value);
-
     // functions which increase/decrease approval
     function increaseApproval(address _spender, uint _addedValue) public
         returns (bool) {

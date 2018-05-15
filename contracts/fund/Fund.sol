@@ -6,8 +6,8 @@ pragma solidity ^0.4.23;
 
 import "../fund/IncentivePool.sol";
 import "../fund/ReservePool.sol";
-import "../token/CustomToken.sol";
-import "../token/VestingTokens.sol";
+import "../token/ICustomToken.sol";
+import "../token/IVestingTokens.sol";
 import "../ownership/Ownable.sol";
 import "../vote/VotingFactory.sol";
 import "../lib/Param.sol";
@@ -25,8 +25,8 @@ contract Fund is Ownable, Param {
     /* Global Variables */
     // totalEther = [contract_account].balance
     FUNDSTATE state;
-    CustomToken token;
-    VestingTokens vestingTokens;
+    ICustomToken token;
+    IVestingTokens vestingTokens;
     address teamWallet; // no restriction for withdrawing
     address mCrowdsaleAddress;
     uint256 tap;
@@ -68,6 +68,9 @@ contract Fund is Ownable, Param {
     }
 
     /* Events */
+    
+    event SetIncentivePoolAddress(address indexed inc_pool_addr, address indexed setter);
+    event SetReservePoolAddress(address indexed res_pool_addr, address indexed setter);
     event SetVotingFactoryAddress(address indexed voting_factory_addr, address indexed setter);
     event SetCrowdsaleAddress(address indexed crowdsale_addr, address indexed setter);
     event SetVestingTokensAddress(address indexed vesting_tokens_addr, address indexed setter);
@@ -85,16 +88,18 @@ contract Fund is Ownable, Param {
         address _token,
         address _teamWallet,
         address _membersAddress
-        ) public Ownable(_membersAddress) {
+        ) public {
             require(!switch__constructor);
             require(_token != 0x0);
             require(_teamWallet != 0x0);
             require(_membersAddress != 0x0);
+            
             switch__constructor = true;
             state = FUNDSTATE.BEFORE_SALE;
             // setFundAddress(address(this)); //FIXIT: set fund address in Members.fundAddress
-            token = CustomToken(_token);
+            token = ICustomToken(_token);
             teamWallet = _teamWallet;
+            members = IMembers(_membersAddress);
             tap = INITIAL_TAP;
             lastWithdrawTime = now;
     }
@@ -157,6 +162,28 @@ contract Fund is Ownable, Param {
     }
 
     /* Set Function */
+    function setIncentivePoolAddress(address _addr) external
+        onlyDevelopers
+        unlock
+        returns(bool) {
+            require(_addr != 0x0);
+            require(address(inc_pool) == 0x0, "should call only once");
+
+            inc_pool = new IncentivePool(address(token), address(this), address(members));
+            emit SetIncentivePoolAddress(_addr, msg.sender);
+            return true;
+    }
+    function setReservePoolAddress(address _addr) external
+        onlyDevelopers
+        unlock
+        returns(bool) {
+            require(_addr != 0x0);
+            require(address(res_pool) == 0x0, "should call only once");
+
+            res_pool = new ReservePool(address(token), address(this), teamWallet, address(members));
+            emit SetReservePoolAddress(_addr, msg.sender);
+            return true;
+    }
     function setVotingFactoryAddress(address _votingfacaddr) external
         onlyDevelopers
         unlock
@@ -188,7 +215,7 @@ contract Fund is Ownable, Param {
             require(_vestingTokensAddr != 0x0);
             require(address(vestingTokens) == 0x0);
 
-            vestingTokens = VestingTokens(_vestingTokensAddr);
+            vestingTokens = IVestingTokens(_vestingTokensAddr);
             // emit SetVestingTokensAddress(_vestingTokensAddr, msg.sender);
             return true;
     }

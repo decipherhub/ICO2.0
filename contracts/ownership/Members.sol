@@ -1,7 +1,8 @@
 pragma solidity ^0.4.23;
 
-contract Members {
-    enum MEMBER_LEVEL {NONE, PRIV, ADV, DEV, OWNER}
+import "../ownership/IMembers.sol";
+
+contract Members is IMembers {
     /* 
         Remember we seperated accounts,
         so it should never receive duplicated address
@@ -14,18 +15,6 @@ contract Members {
     address[] mDevelopers; // we should define owner is a member of dev
     address[] mAdvisors;
     address[] mPrivsale;
-
-
-    /* Events */
-    event CreateOwnership(address indexed _owner);
-    event OwnershipTransferred(address indexed _previousOwner, address indexed _newOwner);
-    event EnrollDeveloper(address indexed _devAddress);
-    event EnrollAdvisor(address indexed _advAddress);
-    event EnrollPrivsale(address indexed _privAddress);
-    event DeleteDeveloper(address indexed _devAddress);
-    event DeleteAdvisor(address indexed _advAddress);
-    event DeletePrivsale(address indexed _privAddress);
-
 
     /* Modifier */
     modifier onlyOwner() {
@@ -66,6 +55,11 @@ contract Members {
         returns(bool) {
             return (uint(mMemberLevel[addr]) >= uint(MEMBER_LEVEL.DEV));
     }
+    
+    function getMemberLevel(address _addr) public view
+        returns(MEMBER_LEVEL) {
+            return mMemberLevel[_addr];
+    }
 
 
     // Ownership functions
@@ -88,8 +82,8 @@ contract Members {
             mCrowdsaleAddress = _saleAddr;
     }
 
-    function enroll_developer(address _devAddr) external
-        only(mCrowdsaleAddress) {
+    function enroll_developer(address _devAddr) public
+    {
             require(_devAddr != address(0));
             require(!isDeveloper(_devAddr), "It is developer");
             emit EnrollDeveloper(_devAddr);
@@ -97,8 +91,8 @@ contract Members {
             mMemberLevel[_devAddr] = MEMBER_LEVEL.DEV;
     }
 
-    function enroll_advisor(address _advAddr) external
-        only(mCrowdsaleAddress) {
+    function enroll_advisor(address _advAddr) public
+    {
             require(_advAddr != address(0));
             require(mMemberLevel[_advAddr] != MEMBER_LEVEL.ADV, "It is already in advisor group");
             emit EnrollAdvisor(_advAddr);
@@ -106,8 +100,8 @@ contract Members {
             mMemberLevel[_advAddr] = MEMBER_LEVEL.ADV;
     }
 
-    function enroll_privsale(address _privAddr) external
-        only(mCrowdsaleAddress) {
+    function enroll_privsale(address _privAddr) public
+    {
             require(_privAddr != address(0));
             require(mMemberLevel[_privAddr] != MEMBER_LEVEL.PRIV, "It is already in privsale group");
             emit EnrollPrivsale(_privAddr);
@@ -115,8 +109,8 @@ contract Members {
             mMemberLevel[_privAddr] = MEMBER_LEVEL.PRIV;
     }
 
-    function delete_developer(address _devAddr) external
-        only(mCrowdsaleAddress) {
+    function delete_developer(address _devAddr) public
+    {
             require(_devAddr != address(0));
             require(mMemberLevel[_devAddr] == MEMBER_LEVEL.DEV);
             emit DeleteDeveloper(_devAddr);
@@ -124,8 +118,8 @@ contract Members {
             _reorganizeArray(mDevelopers, _devAddr);
     }
 
-    function delete_advisor(address _advAddr) external
-        only(mCrowdsaleAddress) {
+    function delete_advisor(address _advAddr) public
+    {
             require(_advAddr != address(0));
             require(mMemberLevel[_advAddr] == MEMBER_LEVEL.ADV);
             emit DeleteAdvisor(_advAddr);
@@ -133,8 +127,8 @@ contract Members {
             _reorganizeArray(mAdvisors, _advAddr);
     }
     
-    function delete_privsale(address _privAddr) external
-        only(mCrowdsaleAddress) {
+    function delete_privsale(address _privAddr) public
+    {
             require(_privAddr != address(0));
             require(mMemberLevel[_privAddr] == MEMBER_LEVEL.PRIV);
             emit DeletePrivsale(_privAddr);

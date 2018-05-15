@@ -23,5 +23,5 @@ module.exports = async function(deployer, network, accounts) {
         _token.address,
         _teamWallet,
         _members.address,
-        {from: accounts[0], gasLimit: 5000000});
+        {from: accounts[0], gasLimit: 50000000});
 };

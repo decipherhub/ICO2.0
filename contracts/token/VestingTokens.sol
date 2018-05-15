@@ -1,10 +1,9 @@
 pragma solidity ^0.4.23;
 
 import "./LockedTokens.sol";
+import "../token/IVestingTokens.sol";
 
-contract VestingTokens is LockedTokens {
-
-    enum LOCK_TYPE {DEV, ADV, PRIV}
+contract VestingTokens is IVestingTokens, LockedTokens {
 
     uint constant DEV_VEST_PERIOD_1 = 12 weeks;
     uint constant DEV_VEST_PERIOD_2 = 1 years;

@@ -5,8 +5,8 @@ import "../fund/Fund.sol";
 import "../lib/SafeMath.sol";
 import "../lib/Param.sol";
 import "../ownership/Ownable.sol";
-import "../token/VestingTokens.sol";
-// import "./ICrowdsale.sol";
+import "../token/IVestingTokens.sol";
+import "./ICrowdsale.sol";
 /**
  * @title Crowdsale
  * @dev Crowdsale is a base contract for managing a token crowdsale.
@@ -17,8 +17,7 @@ import "../token/VestingTokens.sol";
  * minted as contributions arrive, note that the crowdsale contract
  * must be owner of the token in order to be able to mint it.
  */
-contract Crowdsale is Ownable, Param {
-    enum STATE {PREPARE, ACTIVE, FINISHED, FINALIZED, REFUND}
+contract Crowdsale is Ownable, ICrowdsale, Param {
     /* Library and Typedefs */
     using SafeMath for uint256;
     struct Purchase{
@@ -33,7 +32,7 @@ contract Crowdsale is Ownable, Param {
     /* Global Variables */
     CustomToken mToken; //address
     Fund mFund; // ether bank, it should be Fund.sol's Contract address
-    VestingTokens mVestingTokens;
+    IVestingTokens mVestingTokens;
 
     uint mCurrentAmount; //ether amount
     uint public mContributedTokens = 0;
@@ -88,9 +87,9 @@ contract Crowdsale is Ownable, Param {
 
 
     /* View Function */
-    function getStartTime() pure external returns(uint256) { return SALE_START_TIME; }
-    function getEndTime() pure external returns(uint256) { return SALE_END_TIME; }
-    function getFundingGoal() pure external returns(uint256) { return HARD_CAP; }
+    function getStartTime() view external returns(uint256) { return SALE_START_TIME; }
+    function getEndTime() view external returns(uint256) { return SALE_END_TIME; }
+    function getFundingGoal() view external returns(uint256) { return HARD_CAP; }
     function getCurrentSate() view external
         returns(STATE){
             if(mCurrentState == STATE.PREPARE){
@@ -125,20 +124,20 @@ contract Crowdsale is Ownable, Param {
     }
 
     //divide type and check amount of current locked tokens
-    function getLockedAmount(VestingTokens.LOCK_TYPE _type) view public 
+    function getLockedAmount(IVestingTokens.LOCK_TYPE _type) view public 
         returns(uint256){
             uint i;
             uint sum = 0;
 
-            if(_type == VestingTokens.LOCK_TYPE.DEV){
+            if(_type == IVestingTokens.LOCK_TYPE.DEV){
                 for (i = 0; i < mDevelopersIndex.length; i++) {
                     sum += mDevelopers[mDevelopersIndex[i]];
                 }
-            } else if(_type == VestingTokens.LOCK_TYPE.ADV){
+            } else if(_type == IVestingTokens.LOCK_TYPE.ADV){
                 for (i = 0; i < mAdvisorsIndex.length; i++) {
                     sum += mAdvisors[mAdvisorsIndex[i]];
                 }
-            } else if(_type == VestingTokens.LOCK_TYPE.PRIV){
+            } else if(_type == IVestingTokens.LOCK_TYPE.PRIV){
                 for (i = 0; i < mPrivateSaleIndex.length; i++) {
                     sum += mPrivateSale[mPrivateSaleIndex[i]];
                 }
@@ -147,21 +146,21 @@ contract Crowdsale is Ownable, Param {
 
             return sum;
     }
-    function getPersonalLockedAmount(address _address, VestingTokens.LOCK_TYPE _type) view public 
+    function getPersonalLockedAmount(address _address, IVestingTokens.LOCK_TYPE _type) view public 
         returns(uint256){
             require(_address != address(0));
 
-            if(_type == VestingTokens.LOCK_TYPE.DEV){
+            if(_type == IVestingTokens.LOCK_TYPE.DEV){
                 return mDevelopers[_address];
-            } else if(_type == VestingTokens.LOCK_TYPE.ADV){
+            } else if(_type == IVestingTokens.LOCK_TYPE.ADV){
                 return mAdvisors[_address];
-            } else if(_type == VestingTokens.LOCK_TYPE.PRIV){
+            } else if(_type == IVestingTokens.LOCK_TYPE.PRIV){
                 return mPrivateSale[_address];
             } else
                 revert();
     }
     // Business logic could be described here or getRate()
-    function _getTokenAmount(uint256 weiAmount) internal view 
+    function _getTokenAmount(uint256 weiAmount) private view 
         returns (uint256) {
             return weiAmount.mul(getRate());
     }
@@ -185,15 +184,15 @@ contract Crowdsale is Ownable, Param {
     //check the percentage of locked tokens filled;
     function isLockFilled() public view
         returns(bool){
-            uint currentLockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.DEV);
+            uint currentLockedAmount = getLockedAmount(IVestingTokens.LOCK_TYPE.DEV);
             if(currentLockedAmount < mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC)){
                 revert(); // FIXIT:  +mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC).sub(currentLockedAmount));
             }
-            currentLockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.ADV);
+            currentLockedAmount = getLockedAmount(IVestingTokens.LOCK_TYPE.ADV);
             if(currentLockedAmount < mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC)){
                 revert(); // FIXIT:  +mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC).sub(currentLockedAmount));
             }
-            currentLockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.PRIV);
+            currentLockedAmount = getLockedAmount(IVestingTokens.LOCK_TYPE.PRIV);
             if(currentLockedAmount < mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC)){
                 revert(); // FIXIT:  +mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC).sub(currentLockedAmount));
             }
@@ -230,6 +229,7 @@ contract Crowdsale is Ownable, Param {
             require(now >= SALE_END_TIME);
             require(address(this).balance < SOFT_CAP);
             mCurrentState = STATE.REFUND;
+            emit StateChanged(STATE.REFUND, now);
     }
 
 
@@ -346,8 +346,8 @@ contract Crowdsale is Ownable, Param {
     function setToDevelopers(address _address, uint _tokenWeiAmount) external 
         onlyOwner{
             require(_address != address(0));
-            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.DEV));
-            uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.DEV).add(_tokenWeiAmount);
+            require(!_isEnrollmentDuplicated(_address, IMembers.MEMBER_LEVEL.DEV));
+            uint lockedAmount = getLockedAmount(IVestingTokens.LOCK_TYPE.DEV).add(_tokenWeiAmount);
             require(lockedAmount <= mToken.totalSupply().div(1000).mul(DEV_TOKEN_PERC));
             // Solidity will roll back when it reverted
             // check already included
@@ -370,8 +370,8 @@ contract Crowdsale is Ownable, Param {
     function setToAdvisors(address _address, uint _tokenWeiAmount) external 
         onlyOwner{
             require(_address != address(0));
-            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.ADV));
-            uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.ADV).add(_tokenWeiAmount);
+            require(!_isEnrollmentDuplicated(_address, IMembers.MEMBER_LEVEL.ADV));
+            uint lockedAmount = getLockedAmount(IVestingTokens.LOCK_TYPE.ADV).add(_tokenWeiAmount);
             require(lockedAmount <= mToken.totalSupply().div(1000).mul(ADV_TOKEN_PERC));
             // Solidity will roll back when it reverted
             // check already included
@@ -394,8 +394,8 @@ contract Crowdsale is Ownable, Param {
     function setToPrivateSale(address _address, uint _tokenWeiAmount) external 
         onlyOwner{
             require(_address != address(0));
-            require(!_isEnrollmentDuplicated(_address, Members.MEMBER_LEVEL.PRIV));
-            uint lockedAmount = getLockedAmount(VestingTokens.LOCK_TYPE.PRIV).add(_tokenWeiAmount);
+            require(!_isEnrollmentDuplicated(_address, IMembers.MEMBER_LEVEL.PRIV));
+            uint lockedAmount = getLockedAmount(IVestingTokens.LOCK_TYPE.PRIV).add(_tokenWeiAmount);
             require(lockedAmount <= mToken.totalSupply().div(1000).mul(PRIV_TOKEN_PERC));
             // Solidity will roll back when it reverted
             // check already included
@@ -416,16 +416,16 @@ contract Crowdsale is Ownable, Param {
     }
     function _isEnrollmentDuplicated(
         address _address,
-        Members.MEMBER_LEVEL _level
-        ) private view
+        IMembers.MEMBER_LEVEL _level
+        ) private
         returns(bool){
-            Members.MEMBER_LEVEL level = members.mMemberLevel(_address);
-            if(level == Members.MEMBER_LEVEL.NONE || level == _level){
+            IMembers.MEMBER_LEVEL level = members.getMemberLevel(_address);
+            if(level == IMembers.MEMBER_LEVEL.NONE || level == _level){
                 // left means trying update
                 // right means trying enrollment first time
                 return false;
             }
-            if(level == Members.MEMBER_LEVEL.OWNER && _level == Members.MEMBER_LEVEL.DEV){
+            if(level == IMembers.MEMBER_LEVEL.OWNER && _level == IMembers.MEMBER_LEVEL.DEV){
                 return false;
             }
             return true;
@@ -461,7 +461,7 @@ contract Crowdsale is Ownable, Param {
                     mVestingTokens.lockup(
                         mDevelopersIndex[i],
                         mDevelopers[mDevelopersIndex[i]],
-                        VestingTokens.LOCK_TYPE.DEV
+                        IVestingTokens.LOCK_TYPE.DEV
                     );
                     delete mDevelopers[mDevelopersIndex[i]];
                 }
@@ -471,7 +471,7 @@ contract Crowdsale is Ownable, Param {
                     mVestingTokens.lockup(
                         mAdvisorsIndex[i],
                         mAdvisors[mAdvisorsIndex[i]],
-                        VestingTokens.LOCK_TYPE.ADV
+                        IVestingTokens.LOCK_TYPE.ADV
                     );
                     delete mAdvisors[mAdvisorsIndex[i]];
                 }
@@ -481,7 +481,7 @@ contract Crowdsale is Ownable, Param {
                     mVestingTokens.lockup(
                         mPrivateSaleIndex[i],
                         mPrivateSale[mPrivateSaleIndex[i]],
-                        VestingTokens.LOCK_TYPE.PRIV
+                        IVestingTokens.LOCK_TYPE.PRIV
                     );
                     delete mPrivateSale[mPrivateSaleIndex[i]];
                 }

@@ -1,15 +1,16 @@
 pragma solidity ^0.4.23;
 
-import "./Members.sol";
+import "./IMembers.sol";
 
 contract Ownable {
-    Members members;
+    IMembers public members;
 
     /* CONSTRUCTOR */
-    constructor(address _membersAddress) public {
+    /*constructor(address _membersAddress) public {
         require(_membersAddress != 0x0);
-        members = Members(_membersAddress);
-    }
+        members = IMembers(_membersAddress);
+    }*/
+   constructor(address _membersAddress) public {}
 
     /*MODIFIER*/
     modifier only(address account) {
@@ -26,7 +27,11 @@ contract Ownable {
         require(members.isDeveloper(msg.sender));
         _;
     }
-
+    function setMembers(address _addr) public
+        returns(bool) {
+            members = IMembers(_addr);
+            return true;    
+    }
     function isOwner(address account) public view
         returns(bool) {
             return (account == members.owner());

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.23;
 
-import "../token/VestingTokens.sol";
-import "../ownership/Members.sol";
+import "../ownership/IMembers.sol";
+import "../token/IVestingTokens.sol";
 
 contract ICrowdsale{
     enum STATE {PREPARE, ACTIVE, FINISHED, FINALIZED, REFUND}
@@ -16,9 +16,9 @@ contract ICrowdsale{
     function getNextCap() public view returns(uint);
     
 
-    function getLockedAmount(VestingTokens.LOCK_TYPE _type) view public returns(uint256);
-    function getPersonalLockedAmount(address _address, VestingTokens.LOCK_TYPE _type) view public returns(uint256);
-    function _getTokenAmount(uint256 weiAmount) internal view returns (uint256);
+    function getLockedAmount(IVestingTokens.LOCK_TYPE _type) view public returns(uint256);
+    function getPersonalLockedAmount(address _address, IVestingTokens.LOCK_TYPE _type) view public returns(uint256);
+    function _getTokenAmount(uint256 weiAmount) private view returns (uint256);
 
     function _isOver(uint _weiAmount) private view returns(bool);
     function isLockFilled() public view returns(bool);
@@ -43,7 +43,7 @@ contract ICrowdsale{
     function setToDevelopers(address _address, uint _amount) external;
     function setToAdvisors(address _address, uint _amount) external;
     function setToPrivateSale(address _address, uint _amount) external;
-    function _isEnrollmentDuplicated(address _address, Members.MEMBER_LEVEL _level) private returns(bool);
+    function _isEnrollmentDuplicated(address _address, IMembers.MEMBER_LEVEL _level) private returns(bool);
 
     /* Finalizing Functions */
     function _finish() private;
