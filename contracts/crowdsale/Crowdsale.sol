@@ -204,8 +204,8 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     /* Change CrowdSale State, call only once */
     function activateSale() external 
         onlyOwner period(STATE.PREPARE){
-            require(now >= SALE_START_TIME && now < SALE_END_TIME);
-            require(mVestingTokens != address(0));
+            require(now < SALE_END_TIME);
+            require(address(mVestingTokens) != address(0));
             require(mToken.balanceOf(address(this)) == mToken.totalSupply());
 
             mCurrentState = STATE.ACTIVE;
@@ -298,8 +298,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function _addToUserContributed(
         address _address,
         uint _additionalEther,
-        uint _additionalToken) private
-        period(STATE.ACTIVE){
+        uint _additionalToken) private{
             mContributors[_address].tokens = mContributors[_address].tokens.add(_additionalToken);
             mContributors[_address].ethers = mContributors[_address].ethers.add(_additionalEther);
             
@@ -435,8 +434,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
 
 
     /* Finalizing Functions */
-    function _finish() private 
-        period(STATE.ACTIVE){
+    function _finish() private{
             mCurrentState = STATE.FINISHED;
             emit StateChanged(STATE.FINISHED, now);
     }

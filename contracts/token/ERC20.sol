@@ -16,17 +16,6 @@ contract ERC20 is IERC20, Param {
 
 	address public owner;
 
-    /* Constructor */
-    constructor()
-        public {
-            totalSupply_ = INITIAL_SUPPLY; // Update total supply
-            decimals = DECIMALS;     // Amount of decimals for display purposes
-            name = TOKEN_NAME;    // Set the name for display purposes
-            symbol = TOKEN_SYMBOL;  // Set the symbol for display purposes
-            owner = msg.sender;
-            balances[owner] = totalSupply_; //set initial owner
-    }
-
     //we can view public variables without view function
     /* Functions */
     function totalSupply() public view returns (uint256) {
@@ -37,7 +26,7 @@ contract ERC20 is IERC20, Param {
     * @param _owner The address to query the the balance of.
     * @return An uint256 representing the amount owned by the passed address.
     */
-    function balanceOf(address _owner) public view returns (uint256 balance) {
+    function balanceOf(address _owner) public view returns (uint256) {
         return balances[_owner];
     }
     function allowance(address _owner, address _spender) public view returns (uint256) {
@@ -61,14 +50,14 @@ contract ERC20 is IERC20, Param {
     }
 
     // Allow another contract to spend some tokens in your behalf
-    function approve(address _spender, uint256 _value) public returns (bool success) {
+    function approve(address _spender, uint256 _value) public returns (bool) {
         require(_value > 0);
         allowed[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
         return true;
     }
     // A contract attempts to get the coins
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(_to != address(0));     // Prevent transfer to 0x0 address. Use burn() instead
         require(_value > 0);
         require(balances[_from] >= _value, "Not Enough Value");

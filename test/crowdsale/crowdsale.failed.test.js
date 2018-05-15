@@ -15,7 +15,10 @@ require('chai')
 
 contract("Crowdsale", function(accounts){
     let instance;
-    let customToken;
+    let token;
+    let members;
+    let fund;
+
     let totalSupply;
     let decimals;
     let HARD_CAP;
@@ -27,21 +30,25 @@ contract("Crowdsale", function(accounts){
         await advanceBlock();
 
         instance = await Crowdsale.deployed();
-        customToken = await CustomToken.deployed();
+        token = await CustomToken.deployed();
         members = await Members.deployed();
-        vestingTokens = await VestingTokens.deployed();
+        fund = await Fund.deployed();
+        fund.setCrowdsaleAddress(instance.address).should.be.fulfilled;
+        members.enroll_developer(accounts[1], {from : accounts[0]}).should.be.fulfilled; //developer_1
+        members.enroll_developer(accounts[2], {from : accounts[0]}).should.be.fulfilled; //developer_2
+        members.enroll_developer(accounts[3], {from : accounts[0]}).should.be.fulfilled; //developer_3
 
-        totalSupply = await customToken.totalSupply.call();
-        decimals = await customToken.decimals.call();
-        HARD_CAP = await instance.HARD_CAP.call();
-        SOFT_CAP = await instance.SOFT_CAP.call();
-        SALE_START_TIME = await instance.SALE_START_TIME.call();
-        SALE_END_TIME = await instance.SALE_END_TIME.call();
+        totalSupply = await token.totalSupply.call();
+        decimals = await token.decimals.call();
+        HARD_CAP = await instance.getFundingGoal.call();
+        SOFT_CAP = web3.toWei(5000, "ether");
+        SALE_START_TIME = await instance.getStartTime.call();
+        SALE_END_TIME = await instance.getEndTime.call();
         await advanceBlock();
 
         let balance = await customToken.balanceOf(accounts[0]);
         customToken.transfer(instance.address, balance).should.be.fulfilled;
-    })
+    });
     // 0 => owner
     // 0 ~ 3 => dev 14%
     // 4 => teamWallet
@@ -81,7 +88,7 @@ contract("Crowdsale", function(accounts){
     });
     it("should be activated", async () =>{
         await instance.setVestingTokens(vestingTokens.address).should.be.fulfilled;
-        await instance.activeSale().should.be.fulfilled;
+        await instance.activateSale().should.be.fulfilled;
         increaseTimeTo(START_TIME);
     });
 
@@ -109,7 +116,7 @@ contract("Crowdsale", function(accounts){
         instance.buyTokens(accounts[10], {from : accounts[10], value : web3.toWei(100, 'ether')}).should.be.rejectedWith('revert');
     });
     it("shouldn't active any functions after end time and not over soft cap", async () => {
-        instance.activeSale().should.be.rejectedWith('revert');
+        instance.activateSale().should.be.rejectedWith('revert');
         instance.finalizeSale().should.be.rejectedWith('revert');
         instance.finishSale().should.be.rejectedWith('revert');
         instance.receiveTokens().should.be.rejectedWith('revert');
@@ -118,10 +125,10 @@ contract("Crowdsale", function(accounts){
     it("should be changed to REFUND", async () =>{
         await instance.activeRefund({from : accounts[13]}).should.be.fulfilled;
         let state = await instance.getCurrentSate.call();
-        assert.equal(state, "REFUND", "state isn't REFUND");
+        assert.equal(state, 4, "state isn't REFUND");
     });
     it("shouldn't active any functions after refund", async () =>{
-        instance.activeSale().should.be.rejectedWith('revert');
+        instance.activateSale().should.be.rejectedWith('revert');
         instance.finalizeSale().should.be.rejectedWith('revert');
         instance.finishSale().should.be.rejectedWith('revert');
         instance.receiveTokens().should.be.rejectedWith('revert');
