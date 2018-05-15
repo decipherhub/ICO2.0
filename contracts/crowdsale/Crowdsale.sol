@@ -1,7 +1,7 @@
 pragma solidity ^0.4.23;
 
-import "../token/CustomToken.sol";
-import "../fund/Fund.sol";
+import "../token/ICustomToken.sol";
+import "../fund/IFund.sol";
 import "../lib/SafeMath.sol";
 import "../lib/Param.sol";
 import "../ownership/Ownable.sol";
@@ -12,7 +12,7 @@ import "./ICrowdsale.sol";
  * @dev Crowdsale is a base contract for managing a token crowdsale.
  * Crowdsales have a start and end timestamps, where investors can make
  * token purchases and the crowdsale will assign them tokens based
- * on a token per ETH rate. Funds collected are forwarded to a wallet
+ * on a token per ETH rate. IFunds collected are forwarded to a wallet
  * as they arrive. The contract requires a MintableToken that will be
  * minted as contributions arrive, note that the crowdsale contract
  * must be owner of the token in order to be able to mint it.
@@ -30,8 +30,8 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     }
 
     /* Global Variables */
-    CustomToken mToken; //address
-    Fund mFund; // ether bank, it should be Fund.sol's Contract address
+    ICustomToken mToken; //address
+    IFund mFund; // ether bank, it should be IFund.sol's Contract address
     IVestingTokens mVestingTokens;
 
     uint mCurrentAmount; //ether amount
@@ -80,8 +80,8 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             require(_tokenAddress != address(0));
             require(_membersAddress != address(0));
 
-            mFund = Fund(_fundAddress);
-            mToken = CustomToken(_tokenAddress);
+            mFund = IFund(_fundAddress);
+            mToken = ICustomToken(_tokenAddress);
     }
 
 
@@ -328,7 +328,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     function setVestingTokens(address _vestingTokensAddress) external 
         onlyOwner period(STATE.PREPARE) {
             require(mVestingTokens == address(0)); //only once
-            mVestingTokens = VestingTokens(_vestingTokensAddress);
+            mVestingTokens = IVestingTokens(_vestingTokensAddress);
     }
     function addWhitelist(address _whitelist, uint _maxcap) external onlyOwner{
         require(mCurrentState < STATE.FINISHED);
@@ -446,7 +446,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
             _lockup();
             //finalize funds
             //give initial fund
-            _forwardFunds();
+            _forwardIFunds();
             mFund.finalizeSale();
             mFund.dividePoolAfterSale([PUB_TOKEN_PERC, INCENTIVE_TOKEN_PERC, RESERVE_TOKEN_PERC]);
             //Refund vote activate
@@ -492,7 +492,7 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
     }
     // send ether to the fund collection wallet
     // override to create custom fund forwarding mechanisms
-    function _forwardFunds() private 
+    function _forwardIFunds() private 
         returns (bool){
             address(mFund).transfer(address(this).balance); //send ether
             mToken.transfer(mFund, mToken.totalSupply().div(1000).mul(RESERVE_TOKEN_PERC+INCENTIVE_TOKEN_PERC)); //send tokens

@@ -5,13 +5,13 @@ pragma solidity ^0.4.23;
 
 import "./TapVoting.sol";
 import "./RefundVoting.sol";
+import "./IVotingFactory.sol";
 import "../ownership/Ownable.sol";
 import "../lib/Param.sol";
 
-contract VotingFactory is Ownable, Param {
+contract VotingFactory is IVotingFactory, Ownable, Param {
 
     /* Typedefs */
-    enum VOTE_TYPE {NONE, REFUND, TAP}
     struct VoteInfo {
         VOTE_TYPE voteType;
         uint8 round;
@@ -19,14 +19,9 @@ contract VotingFactory is Ownable, Param {
     }
 
     /* Global Variables */
-    address mTokenAddress;
-    address mFundAddress;
-    address mVestingTokensAddress;
     mapping(address => VoteInfo) mVoteList; // {vote name => {voteAddress, voteType}}
     TapVoting mTapVoting;
     RefundVoting mRefundVoting;
-    address public mTapVotingAddress;
-    address public mRefundVotingAddress;
     TapVoting NULL_TapVoting;
     RefundVoting NULL_RefundVoting;
     uint8 mTapRound;
@@ -35,11 +30,6 @@ contract VotingFactory is Ownable, Param {
     bool switch__isTapVotingOpened = false;
 
 
-    /* Events */
-    event CreateTapVote(address indexed vote_account, VOTE_TYPE indexed type_, uint8 indexed round, string name);
-    event CreateRefundVote(address indexed vote_account, VOTE_TYPE indexed type_, uint8 indexed round, string name);
-    event DiscardTapVote(address indexed vote_account, VOTE_TYPE indexed type_, uint8 indexed round, string memo);
-    event DiscardRefundVote(address indexed vote_account, VOTE_TYPE indexed type_, uint8 indexed round, string memo);
 
     /* Modifiers */
     modifier allset() {

@@ -4,24 +4,17 @@
  */
 pragma solidity ^0.4.23;
 
+import "../fund/IFund.sol";
 import "../fund/IncentivePool.sol";
 import "../fund/ReservePool.sol";
 import "../token/ICustomToken.sol";
 import "../token/IVestingTokens.sol";
 import "../ownership/Ownable.sol";
-import "../vote/VotingFactory.sol";
+import "../vote/IVotingFactory.sol";
 import "../lib/Param.sol";
 
-contract Fund is Ownable, Param {
+contract Fund is IFund, Ownable, Param {
     /* Library and Typedefs */
-    enum FUNDSTATE {
-        BEFORE_SALE,
-        CROWDSALE,
-        WORKING,
-        LOCKED,
-        COLLAPSED
-    }
-
     /* Global Variables */
     // totalEther = [contract_account].balance
     FUNDSTATE state;
@@ -37,7 +30,7 @@ contract Fund is Ownable, Param {
     bool private switch__lock_fund = false;
 
 
-    VotingFactory votingFactory;
+    IVotingFactory votingFactory;
     ReservePool res_pool;
     IncentivePool inc_pool;
 
@@ -66,24 +59,6 @@ contract Fund is Ownable, Param {
         require(address(res_pool) != 0x0);
         _;
     }
-
-    /* Events */
-    
-    // event SetIncentivePoolAddress(address indexed inc_pool_addr, address indexed setter);
-    // event SetReservePoolAddress(address indexed res_pool_addr, address indexed setter);
-    // event SetVotingFactoryAddress(address indexed voting_factory_addr, address indexed setter);
-    // event SetCrowdsaleAddress(address indexed crowdsale_addr, address indexed setter);
-    // event SetVestingTokensAddress(address indexed vesting_tokens_addr, address indexed setter);
-    //
-    // Do we need above events? 
-    event ChangeFundState(uint256 indexed time, FUNDSTATE indexed changed_state);
-    event ChangeTap(uint256 indexed time, uint256 indexed changed_tap);
-    event DividePoolAfterSale(address indexed inc_addr, address indexed res_addr);
-    event WithdrawTap(uint256 indexed time, address indexed _teamwallet);
-    event WithdrawFromIncentive(uint256 indexed time, address indexed _caller);
-    event WithdrawFromReserve(uint256 indexed time, address indexed _teamwallet);
-    event Refund(uint256 indexed time, address indexed refund_addr, uint256 indexed wei_amount);
-    //add more
 
     /* Constructor */
     constructor(
@@ -191,7 +166,7 @@ contract Fund is Ownable, Param {
             require(_votingfacaddr != 0x0);
             require(address(votingFactory) == 0x0);
 
-            votingFactory = VotingFactory(_votingfacaddr);
+            votingFactory = IVotingFactory(_votingfacaddr);
             // emit SetVotingFactoryAddress(_votingfacaddr, msg.sender);
             return true;
     }
