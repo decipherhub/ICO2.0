@@ -11,7 +11,6 @@ import "../fund/Fund.sol";
  * @dev Lock tokens for certain period of time
  */
 contract LockedTokens is Param {
-    using SafeMath for uint256;
     struct Tokens {
         uint256 amount;
         uint256 lockEndTime;

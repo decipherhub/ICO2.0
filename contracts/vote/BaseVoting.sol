@@ -9,7 +9,6 @@ import "../ownership/Ownable.sol";
 
 contract BaseVoting is Ownable, Param {
     /*Library and Typedefs*/
-    using SafeMath for uint256;
 
     enum VOTE_PERIOD {NONE, INITIALIZED, OPENED, CLOSED, FINALIZED, DISCARDED}
     enum VOTE_STATE {NONE, AGREE, DISAGREE}

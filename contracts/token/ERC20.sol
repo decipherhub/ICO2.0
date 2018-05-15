@@ -6,7 +6,6 @@ import "./IERC20.sol";
 
 contract ERC20 is IERC20, Param {
     /* Library */
-    using SafeMath for uint256;
     /* Global Variables */
     string public name;
     string public symbol;

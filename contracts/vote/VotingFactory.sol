@@ -5,13 +5,10 @@ pragma solidity ^0.4.23;
 
 import "../token/CustomToken.sol";
 import "../fund/Fund.sol";
-import "./BaseVoting.sol";
 import "./TapVoting.sol";
 import "./RefundVoting.sol";
 import "../ownership/Ownable.sol";
-import "../ownership/Members.sol";
 import "../token/VestingTokens.sol";
-import "../lib/SafeMath.sol";
 import "../lib/Param.sol";
 
 contract VotingFactory is Ownable, Param {
@@ -28,12 +25,14 @@ contract VotingFactory is Ownable, Param {
     CustomToken mToken;
     Fund mFund;
     mapping(address => voteInfo) mVoteList; // {vote name => {voteAddress, voteType}}
-    TapVoting public mTapVoting;
-    RefundVoting public mRefundVoting;
+    TapVoting mTapVoting;
+    RefundVoting mRefundVoting;
+    address public mTapVotingAddress;
+    address public mRefundVotingAddress;
     TapVoting NULL_TapVoting;
     RefundVoting NULL_RefundVoting;
-    uint256 mTapRound;
-    uint256 mRefundRound;
+    uint8 mTapRound;
+    uint8 mRefundRound;
     VestingTokens mVestingTokens;
 
     bool switch__isTapVotingOpened = false;
@@ -72,12 +71,16 @@ contract VotingFactory is Ownable, Param {
             mTapRound = 1;
             mRefundRound = 1;
             mVestingTokens = VestingTokens(_vestingTokensAddress);
-            mFund.setVotingFactoryAddress(address(this));
-            NULL_TapVoting = new TapVoting("null", 0x1, 0x1, 0x1, _membersAddress);
-            NULL_RefundVoting = new RefundVoting("null", 0x1, 0x1, 0x1, _membersAddress);
+            // mFund.setVotingFactoryAddress(address(this)); //FIXIT we should remove this one
     }
+    // function initialize() public
+    //     onlyDevelopers{
+    //         NULL_TapVoting = new TapVoting("null", 0x1, 0x1, 0x1, address(members));
+    //         NULL_RefundVoting = new RefundVoting("null", 0x1, 0x1, 0x1, address(members));
+    // }
+
     /* Fallback Function */
-    function () external {}
+    function () external payable {}
 
     function isVoteExist(address _votingAddress) view public
         returns(bool) {
@@ -96,7 +99,8 @@ contract VotingFactory is Ownable, Param {
             switch__isTapVotingOpened = true;
             emit CreateTapVote(address(mTapVoting), VOTE_TYPE.TAP, mTapRound, _votingName);
             mTapRound++;
-            return address(mTapVoting);
+            mTapVotingAddress = address(mTapVoting);
+            return mTapVotingAddress;
     }
 
     function newRefundVoting(string _votingName) public
@@ -152,7 +156,7 @@ contract VotingFactory is Ownable, Param {
         allset
         returns(bool) {
             destroyVoting(address(mRefundVoting), "refresh by refreshRefundVoting");
-            newRefundVoting("refund voting");
+            mRefundVotingAddress = newRefundVoting("refund voting");
             return true;
     }
 }
