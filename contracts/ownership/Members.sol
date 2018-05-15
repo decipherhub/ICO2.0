@@ -10,7 +10,7 @@ contract Members is IMembers {
 
     address owner_;
     address mCrowdsaleAddress;
-    mapping(address => MEMBER_LEVEL) public mMemberLevel;
+    mapping(address => MEMBER_LEVEL) mMemberLevel;
 
     address[] mDevelopers; // we should define owner is a member of dev
     address[] mAdvisors;

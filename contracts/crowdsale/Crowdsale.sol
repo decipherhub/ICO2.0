@@ -414,10 +414,11 @@ contract Crowdsale is Ownable, ICrowdsale, Param {
                 members.enroll_privsale(_address);
             } 
     }
+
     function _isEnrollmentDuplicated(
         address _address,
         IMembers.MEMBER_LEVEL _level
-        ) private
+        ) private view
         returns(bool){
             IMembers.MEMBER_LEVEL level = members.getMemberLevel(_address);
             if(level == IMembers.MEMBER_LEVEL.NONE || level == _level){

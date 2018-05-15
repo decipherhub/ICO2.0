@@ -3,8 +3,9 @@
 pragma solidity ^0.4.23;
 
 import "./BaseToken.sol";
+import "./ICustomToken.sol";
 
-contract CustomToken is BaseToken {
+contract CustomToken is ICustomToken, BaseToken {
     constructor() public
         {
             decimals = 18;     // Amount of decimals for display purposes

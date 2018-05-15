@@ -18,9 +18,6 @@ contract ICrowdsale{
 
     function getLockedAmount(IVestingTokens.LOCK_TYPE _type) view public returns(uint256);
     function getPersonalLockedAmount(address _address, IVestingTokens.LOCK_TYPE _type) view public returns(uint256);
-    function _getTokenAmount(uint256 weiAmount) private view returns (uint256);
-
-    function _isOver(uint _weiAmount) private view returns(bool);
     function isLockFilled() public view returns(bool);
 
     /* Change CrowdSale State, call only once */
@@ -43,11 +40,4 @@ contract ICrowdsale{
     function setToDevelopers(address _address, uint _amount) external;
     function setToAdvisors(address _address, uint _amount) external;
     function setToPrivateSale(address _address, uint _amount) external;
-    function _isEnrollmentDuplicated(address _address, IMembers.MEMBER_LEVEL _level) private returns(bool);
-
-    /* Finalizing Functions */
-    function _finish() private;
-    function _finalize() private;
-    function _lockup() private;
-    function _forwardFunds() private returns (bool);
 }
