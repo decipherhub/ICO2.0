@@ -1,10 +1,9 @@
 pragma solidity ^0.4.23;
 
 import "./BaseVoting.sol";
+import "./IRefundVoting.sol";
 
-contract RefundVoting is BaseVoting {
-
-    event DiscardRefundVoting(uint256 indexed time);
+contract RefundVoting is BaseVoting, IRefundVoting {
 
     constructor(
         string _votingName,

@@ -6,14 +6,10 @@ import "../lib/SafeMath.sol";
 import "../lib/Param.sol";
 import "../token/VestingTokens.sol";
 import "../ownership/Ownable.sol";
+import "./IBaseVoting.sol";
 
-contract BaseVoting is Ownable, Param {
+contract BaseVoting is IBaseVoting, Ownable, Param {
     /*Library and Typedefs*/
-
-    enum VOTE_PERIOD {NONE, INITIALIZED, OPENED, CLOSED, FINALIZED, DISCARDED}
-    enum VOTE_STATE {NONE, AGREE, DISAGREE}
-    enum RESULT_STATE {NONE, PASSED, REJECTED}
-    enum GROUP {PUBLIC, LOCKED}
 
     struct vote_receipt {
         VOTE_STATE state;
@@ -39,7 +35,7 @@ contract BaseVoting is Ownable, Param {
     uint256 agree_count = 0;
     uint256 disagree_count = 0;
 
-    mapping(address => vote_receipt) public party_dict;
+    mapping(address => vote_receipt) party_dict;
     address[] public party_list;
     address[] public public_party_list; //withhold
     address[] public locked_party_list; //withhold
@@ -47,12 +43,6 @@ contract BaseVoting is Ownable, Param {
     bool isAvailable = true;
     uint256 discardTime;
 
-    /* Events */
-    event InitializeVote(address indexed vote_account, string indexed voting_name, uint256 startTime, uint256 endTime);
-    event OpenVote(address indexed opener, uint256 open_time);
-    event CloseVote(address indexed closer, uint256 close_time);
-    event FinalizeVote(address indexed finalizer, uint256 finalize_time);
-    event DiscardVote(address indexed vote_account, uint256 discard_time);
 
     /* Modifiers */
     modifier period(VOTE_PERIOD p) {
@@ -173,20 +163,21 @@ contract BaseVoting is Ownable, Param {
     }
 
     function readPartyDict(address account) public view
-        returns(VOTE_STATE, uint256, bool) {
-            return (party_dict[account].state, party_dict[account].power, party_dict[account].isReceivedIncentive);
+        returns(VOTE_STATE, GROUP, uint256, bool) {
+            return (party_dict[account].state, party_dict[account].group, party_dict[account].power, party_dict[account].isReceivedIncentive);
     }
 
     function writePartyDict(
         address account,
-        VOTE_STATE a,
-        uint256 b,
-        bool c) public 
+        VOTE_STATE _state,
+        GROUP _group,
+        uint256 _power,
+        bool _bool) public 
         available
         returns(bool) {
-            if(a != VOTE_STATE.NONE) {party_dict[account].state = a;}
-            if(b != 0) {party_dict[account].power = b;}
-            if(c != false) {party_dict[account].isReceivedIncentive = true;}
+            if(_state != VOTE_STATE.NONE) {party_dict[account].state = _state;}
+            if(_power != 0) {party_dict[account].power = _power;}
+            if(_bool != false) {party_dict[account].isReceivedIncentive = true;}
             return true;
     }
 

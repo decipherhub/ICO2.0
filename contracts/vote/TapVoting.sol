@@ -2,8 +2,9 @@ pragma solidity ^0.4.23;
 
 import "./BaseVoting.sol";
 import "../fund/Fund.sol";
+import "./ITapVoting.sol";
 
-contract TapVoting is BaseVoting {
+contract TapVoting is BaseVoting, ITapVoting {
 
     /* Constructor */
     constructor(
