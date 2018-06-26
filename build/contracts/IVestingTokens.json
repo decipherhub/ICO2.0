@@ -1,0 +1,714 @@
+{
+  "contractName": "IVestingTokens",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "releaseTokens",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "lock",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_value",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_lockEndTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "TokensLocked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_value",
+          "type": "uint256"
+        }
+      ],
+      "name": "TokensUnlocked",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_crowdsaleAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setCrowdsaleAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "name": "_type",
+          "type": "uint8"
+        }
+      ],
+      "name": "lockup",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.4.23;\n\nimport \"../token/ILockedTokens.sol\";\n\ncontract IVestingTokens is ILockedTokens {\n    enum LOCK_TYPE {DEV, ADV, PRIV}\n\n    function setCrowdsaleAddress(address _crowdsaleAddress) public returns(bool);\n    function lockup(address _to, uint256 _amount, LOCK_TYPE _type) external;\n}\n",
+  "sourcePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/IVestingTokens.sol",
+  "ast": {
+    "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/IVestingTokens.sol",
+    "exportedSymbols": {
+      "IVestingTokens": [
+        4398
+      ]
+    },
+    "id": 4399,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4374,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:16"
+      },
+      {
+        "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/ILockedTokens.sol",
+        "file": "../token/ILockedTokens.sol",
+        "id": 4375,
+        "nodeType": "ImportDirective",
+        "scope": 4399,
+        "sourceUnit": 4373,
+        "src": "26:36:16",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 4376,
+              "name": "ILockedTokens",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4372,
+              "src": "91:13:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ILockedTokens_$4372",
+                "typeString": "contract ILockedTokens"
+              }
+            },
+            "id": 4377,
+            "nodeType": "InheritanceSpecifier",
+            "src": "91:13:16"
+          }
+        ],
+        "contractDependencies": [
+          4372
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 4398,
+        "linearizedBaseContracts": [
+          4398,
+          4372
+        ],
+        "name": "IVestingTokens",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "IVestingTokens.LOCK_TYPE",
+            "id": 4381,
+            "members": [
+              {
+                "id": 4378,
+                "name": "DEV",
+                "nodeType": "EnumValue",
+                "src": "127:3:16"
+              },
+              {
+                "id": 4379,
+                "name": "ADV",
+                "nodeType": "EnumValue",
+                "src": "132:3:16"
+              },
+              {
+                "id": 4380,
+                "name": "PRIV",
+                "nodeType": "EnumValue",
+                "src": "137:4:16"
+              }
+            ],
+            "name": "LOCK_TYPE",
+            "nodeType": "EnumDefinition",
+            "src": "111:31:16"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4388,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "setCrowdsaleAddress",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4384,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4383,
+                  "name": "_crowdsaleAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4388,
+                  "src": "177:25:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4382,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "177:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "176:27:16"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 4387,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4386,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4388,
+                  "src": "219:4:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 4385,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "219:4:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "218:6:16"
+            },
+            "scope": 4398,
+            "src": "148:77:16",
+            "stateMutability": "nonpayable",
+            "superFunction": 4347,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4397,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "lockup",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4395,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4390,
+                  "name": "_to",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4397,
+                  "src": "246:11:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4389,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "246:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4392,
+                  "name": "_amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4397,
+                  "src": "259:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 4391,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "259:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4394,
+                  "name": "_type",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4397,
+                  "src": "276:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_LOCK_TYPE_$4381",
+                    "typeString": "enum IVestingTokens.LOCK_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 4393,
+                    "name": "LOCK_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 4381,
+                    "src": "276:9:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_LOCK_TYPE_$4381",
+                      "typeString": "enum IVestingTokens.LOCK_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "245:47:16"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 4396,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "301:0:16"
+            },
+            "scope": 4398,
+            "src": "230:72:16",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 4399,
+        "src": "64:240:16"
+      }
+    ],
+    "src": "0:305:16"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/IVestingTokens.sol",
+    "exportedSymbols": {
+      "IVestingTokens": [
+        4398
+      ]
+    },
+    "id": 4399,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4374,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:16"
+      },
+      {
+        "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/ILockedTokens.sol",
+        "file": "../token/ILockedTokens.sol",
+        "id": 4375,
+        "nodeType": "ImportDirective",
+        "scope": 4399,
+        "sourceUnit": 4373,
+        "src": "26:36:16",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 4376,
+              "name": "ILockedTokens",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4372,
+              "src": "91:13:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ILockedTokens_$4372",
+                "typeString": "contract ILockedTokens"
+              }
+            },
+            "id": 4377,
+            "nodeType": "InheritanceSpecifier",
+            "src": "91:13:16"
+          }
+        ],
+        "contractDependencies": [
+          4372
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 4398,
+        "linearizedBaseContracts": [
+          4398,
+          4372
+        ],
+        "name": "IVestingTokens",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "IVestingTokens.LOCK_TYPE",
+            "id": 4381,
+            "members": [
+              {
+                "id": 4378,
+                "name": "DEV",
+                "nodeType": "EnumValue",
+                "src": "127:3:16"
+              },
+              {
+                "id": 4379,
+                "name": "ADV",
+                "nodeType": "EnumValue",
+                "src": "132:3:16"
+              },
+              {
+                "id": 4380,
+                "name": "PRIV",
+                "nodeType": "EnumValue",
+                "src": "137:4:16"
+              }
+            ],
+            "name": "LOCK_TYPE",
+            "nodeType": "EnumDefinition",
+            "src": "111:31:16"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4388,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "setCrowdsaleAddress",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4384,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4383,
+                  "name": "_crowdsaleAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4388,
+                  "src": "177:25:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4382,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "177:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "176:27:16"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 4387,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4386,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4388,
+                  "src": "219:4:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 4385,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "219:4:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "218:6:16"
+            },
+            "scope": 4398,
+            "src": "148:77:16",
+            "stateMutability": "nonpayable",
+            "superFunction": 4347,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4397,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "lockup",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4395,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4390,
+                  "name": "_to",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4397,
+                  "src": "246:11:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4389,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "246:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4392,
+                  "name": "_amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4397,
+                  "src": "259:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 4391,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "259:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4394,
+                  "name": "_type",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4397,
+                  "src": "276:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_LOCK_TYPE_$4381",
+                    "typeString": "enum IVestingTokens.LOCK_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 4393,
+                    "name": "LOCK_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 4381,
+                    "src": "276:9:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_LOCK_TYPE_$4381",
+                      "typeString": "enum IVestingTokens.LOCK_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "245:47:16"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 4396,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "301:0:16"
+            },
+            "scope": 4398,
+            "src": "230:72:16",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 4399,
+        "src": "64:240:16"
+      }
+    ],
+    "src": "0:305:16"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.23+commit.124ca40d.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-05-22T12:40:15.221Z"
+}

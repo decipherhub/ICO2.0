@@ -1,0 +1,436 @@
+{
+  "contractName": "ICustomToken",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferFrom",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_value",
+          "type": "uint256"
+        }
+      ],
+      "name": "burn",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_spender",
+          "type": "address"
+        },
+        {
+          "name": "_subtractedValue",
+          "type": "uint256"
+        }
+      ],
+      "name": "decreaseApproval",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "who",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
+        }
+      ],
+      "name": "burnFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "transfer",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_spender",
+          "type": "address"
+        },
+        {
+          "name": "_addedValue",
+          "type": "uint256"
+        }
+      ],
+      "name": "increaseApproval",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "spender",
+          "type": "address"
+        }
+      ],
+      "name": "allowance",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "burner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "Burn",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "Approval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.4.23;\n\nimport \"../token/IBaseToken.sol\";\n\ncontract ICustomToken is IBaseToken {}\n",
+  "sourcePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/ICustomToken.sol",
+  "ast": {
+    "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/ICustomToken.sol",
+    "exportedSymbols": {
+      "ICustomToken": [
+        4269
+      ]
+    },
+    "id": 4270,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4265,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:13"
+      },
+      {
+        "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/IBaseToken.sol",
+        "file": "../token/IBaseToken.sol",
+        "id": 4266,
+        "nodeType": "ImportDirective",
+        "scope": 4270,
+        "sourceUnit": 4264,
+        "src": "26:33:13",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 4267,
+              "name": "IBaseToken",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4263,
+              "src": "86:10:13",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_IBaseToken_$4263",
+                "typeString": "contract IBaseToken"
+              }
+            },
+            "id": 4268,
+            "nodeType": "InheritanceSpecifier",
+            "src": "86:10:13"
+          }
+        ],
+        "contractDependencies": [
+          4263,
+          4338
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 4269,
+        "linearizedBaseContracts": [
+          4269,
+          4263,
+          4338
+        ],
+        "name": "ICustomToken",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 4270,
+        "src": "61:38:13"
+      }
+    ],
+    "src": "0:100:13"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/ICustomToken.sol",
+    "exportedSymbols": {
+      "ICustomToken": [
+        4269
+      ]
+    },
+    "id": 4270,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4265,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:13"
+      },
+      {
+        "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/token/IBaseToken.sol",
+        "file": "../token/IBaseToken.sol",
+        "id": 4266,
+        "nodeType": "ImportDirective",
+        "scope": 4270,
+        "sourceUnit": 4264,
+        "src": "26:33:13",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 4267,
+              "name": "IBaseToken",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4263,
+              "src": "86:10:13",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_IBaseToken_$4263",
+                "typeString": "contract IBaseToken"
+              }
+            },
+            "id": 4268,
+            "nodeType": "InheritanceSpecifier",
+            "src": "86:10:13"
+          }
+        ],
+        "contractDependencies": [
+          4263,
+          4338
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 4269,
+        "linearizedBaseContracts": [
+          4269,
+          4263,
+          4338
+        ],
+        "name": "ICustomToken",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 4270,
+        "src": "61:38:13"
+      }
+    ],
+    "src": "0:100:13"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.23+commit.124ca40d.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-05-22T12:40:15.195Z"
+}

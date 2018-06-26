@@ -1,0 +1,2514 @@
+{
+  "contractName": "IVotingFactory",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "mFundAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "mRefundVotingAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "mVestingTokensAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "mTapVotingAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "mTokenAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "vote_account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "type_",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "name": "round",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "CreateTapVote",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "vote_account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "type_",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "name": "round",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "CreateRefundVote",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "vote_account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "type_",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "name": "round",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "memo",
+          "type": "string"
+        }
+      ],
+      "name": "DiscardTapVote",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "vote_account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "type_",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "name": "round",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "memo",
+          "type": "string"
+        }
+      ],
+      "name": "DiscardRefundVote",
+      "type": "event"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_votingAddress",
+          "type": "address"
+        }
+      ],
+      "name": "isVoteExist",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_votingName",
+          "type": "string"
+        }
+      ],
+      "name": "newTapVoting",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_votingName",
+          "type": "string"
+        }
+      ],
+      "name": "newRefundVoting",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_vote_account",
+          "type": "address"
+        },
+        {
+          "name": "_memo",
+          "type": "string"
+        }
+      ],
+      "name": "destroyVoting",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "refreshRefundVoting",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.4.23;\n\ncontract IVotingFactory {\n\n    enum VOTE_TYPE {NONE, REFUND, TAP}\n    address public mTapVotingAddress;\n    address public mRefundVotingAddress;\n    address public mTokenAddress;\n    address public mFundAddress;\n    address public mVestingTokensAddress;\n    \n    function isVoteExist(address _votingAddress) view public returns(bool);\n    function newTapVoting(string _votingName) public returns(address);\n    function newRefundVoting(string _votingName) public returns(address);\n    function destroyVoting(address _vote_account, string _memo) public returns(bool);\n    function refreshRefundVoting() public returns(bool);\n\n    /* Events */\n    event CreateTapVote(address indexed vote_account, VOTE_TYPE indexed type_, uint8 indexed round, string name);\n    event CreateRefundVote(address indexed vote_account, VOTE_TYPE indexed type_, uint8 indexed round, string name);\n    event DiscardTapVote(address indexed vote_account, VOTE_TYPE indexed type_, uint8 indexed round, string memo);\n    event DiscardRefundVote(address indexed vote_account, VOTE_TYPE indexed type_, uint8 indexed round, string memo);\n}\n",
+  "sourcePath": "/Users/pyo/blockchain/ICO2.0/contracts/vote/IVotingFactory.sol",
+  "ast": {
+    "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/vote/IVotingFactory.sol",
+    "exportedSymbols": {
+      "IVotingFactory": [
+        5818
+      ]
+    },
+    "id": 5819,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5728,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:20"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 5818,
+        "linearizedBaseContracts": [
+          5818
+        ],
+        "name": "IVotingFactory",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "IVotingFactory.VOTE_TYPE",
+            "id": 5732,
+            "members": [
+              {
+                "id": 5729,
+                "name": "NONE",
+                "nodeType": "EnumValue",
+                "src": "73:4:20"
+              },
+              {
+                "id": 5730,
+                "name": "REFUND",
+                "nodeType": "EnumValue",
+                "src": "79:6:20"
+              },
+              {
+                "id": 5731,
+                "name": "TAP",
+                "nodeType": "EnumValue",
+                "src": "87:3:20"
+              }
+            ],
+            "name": "VOTE_TYPE",
+            "nodeType": "EnumDefinition",
+            "src": "57:34:20"
+          },
+          {
+            "constant": false,
+            "id": 5734,
+            "name": "mTapVotingAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "96:32:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5733,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "96:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 5736,
+            "name": "mRefundVotingAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "134:35:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5735,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "134:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 5738,
+            "name": "mTokenAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "175:28:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5737,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "175:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 5740,
+            "name": "mFundAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "209:27:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5739,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "209:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 5742,
+            "name": "mVestingTokensAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "242:36:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5741,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "242:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5749,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "isVoteExist",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5745,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5744,
+                  "name": "_votingAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5749,
+                  "src": "310:22:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5743,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "310:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "309:24:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5748,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5747,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5749,
+                  "src": "354:4:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5746,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "354:4:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "353:6:20"
+            },
+            "scope": 5818,
+            "src": "289:71:20",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5756,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "newTapVoting",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5752,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5751,
+                  "name": "_votingName",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5756,
+                  "src": "387:18:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5750,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "387:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "386:20:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5755,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5754,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5756,
+                  "src": "422:7:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5753,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "422:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "421:9:20"
+            },
+            "scope": 5818,
+            "src": "365:66:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5763,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "newRefundVoting",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5759,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5758,
+                  "name": "_votingName",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5763,
+                  "src": "461:18:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5757,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "461:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "460:20:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5762,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5761,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5763,
+                  "src": "496:7:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5760,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "496:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "495:9:20"
+            },
+            "scope": 5818,
+            "src": "436:69:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5772,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "destroyVoting",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5768,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5765,
+                  "name": "_vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5772,
+                  "src": "533:21:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5764,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "533:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5767,
+                  "name": "_memo",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5772,
+                  "src": "556:12:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5766,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "556:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "532:37:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5771,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5770,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5772,
+                  "src": "585:4:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5769,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "585:4:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "584:6:20"
+            },
+            "scope": 5818,
+            "src": "510:81:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5777,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "refreshRefundVoting",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5773,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "624:2:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5776,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5775,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5777,
+                  "src": "642:4:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5774,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "642:4:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "641:6:20"
+            },
+            "scope": 5818,
+            "src": "596:52:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 5787,
+            "name": "CreateTapVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 5786,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5779,
+                  "indexed": true,
+                  "name": "vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5787,
+                  "src": "691:28:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5778,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "691:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5781,
+                  "indexed": true,
+                  "name": "type_",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5787,
+                  "src": "721:23:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                    "typeString": "enum IVotingFactory.VOTE_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 5780,
+                    "name": "VOTE_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 5732,
+                    "src": "721:9:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                      "typeString": "enum IVotingFactory.VOTE_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5783,
+                  "indexed": true,
+                  "name": "round",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5787,
+                  "src": "746:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 5782,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "746:5:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5785,
+                  "indexed": false,
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5787,
+                  "src": "767:11:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5784,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "767:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "690:89:20"
+            },
+            "src": "671:109:20"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 5797,
+            "name": "CreateRefundVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 5796,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5789,
+                  "indexed": true,
+                  "name": "vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5797,
+                  "src": "808:28:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5788,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "808:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5791,
+                  "indexed": true,
+                  "name": "type_",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5797,
+                  "src": "838:23:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                    "typeString": "enum IVotingFactory.VOTE_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 5790,
+                    "name": "VOTE_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 5732,
+                    "src": "838:9:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                      "typeString": "enum IVotingFactory.VOTE_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5793,
+                  "indexed": true,
+                  "name": "round",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5797,
+                  "src": "863:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 5792,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "863:5:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5795,
+                  "indexed": false,
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5797,
+                  "src": "884:11:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5794,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "884:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "807:89:20"
+            },
+            "src": "785:112:20"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 5807,
+            "name": "DiscardTapVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 5806,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5799,
+                  "indexed": true,
+                  "name": "vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5807,
+                  "src": "923:28:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5798,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "923:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5801,
+                  "indexed": true,
+                  "name": "type_",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5807,
+                  "src": "953:23:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                    "typeString": "enum IVotingFactory.VOTE_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 5800,
+                    "name": "VOTE_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 5732,
+                    "src": "953:9:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                      "typeString": "enum IVotingFactory.VOTE_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5803,
+                  "indexed": true,
+                  "name": "round",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5807,
+                  "src": "978:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 5802,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "978:5:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5805,
+                  "indexed": false,
+                  "name": "memo",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5807,
+                  "src": "999:11:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5804,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "999:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "922:89:20"
+            },
+            "src": "902:110:20"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 5817,
+            "name": "DiscardRefundVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 5816,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5809,
+                  "indexed": true,
+                  "name": "vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5817,
+                  "src": "1041:28:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5808,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1041:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5811,
+                  "indexed": true,
+                  "name": "type_",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5817,
+                  "src": "1071:23:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                    "typeString": "enum IVotingFactory.VOTE_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 5810,
+                    "name": "VOTE_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 5732,
+                    "src": "1071:9:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                      "typeString": "enum IVotingFactory.VOTE_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5813,
+                  "indexed": true,
+                  "name": "round",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5817,
+                  "src": "1096:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 5812,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1096:5:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5815,
+                  "indexed": false,
+                  "name": "memo",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5817,
+                  "src": "1117:11:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5814,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1117:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1040:89:20"
+            },
+            "src": "1017:113:20"
+          }
+        ],
+        "scope": 5819,
+        "src": "26:1106:20"
+      }
+    ],
+    "src": "0:1133:20"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/pyo/blockchain/ICO2.0/contracts/vote/IVotingFactory.sol",
+    "exportedSymbols": {
+      "IVotingFactory": [
+        5818
+      ]
+    },
+    "id": 5819,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5728,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:20"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 5818,
+        "linearizedBaseContracts": [
+          5818
+        ],
+        "name": "IVotingFactory",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "IVotingFactory.VOTE_TYPE",
+            "id": 5732,
+            "members": [
+              {
+                "id": 5729,
+                "name": "NONE",
+                "nodeType": "EnumValue",
+                "src": "73:4:20"
+              },
+              {
+                "id": 5730,
+                "name": "REFUND",
+                "nodeType": "EnumValue",
+                "src": "79:6:20"
+              },
+              {
+                "id": 5731,
+                "name": "TAP",
+                "nodeType": "EnumValue",
+                "src": "87:3:20"
+              }
+            ],
+            "name": "VOTE_TYPE",
+            "nodeType": "EnumDefinition",
+            "src": "57:34:20"
+          },
+          {
+            "constant": false,
+            "id": 5734,
+            "name": "mTapVotingAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "96:32:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5733,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "96:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 5736,
+            "name": "mRefundVotingAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "134:35:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5735,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "134:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 5738,
+            "name": "mTokenAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "175:28:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5737,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "175:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 5740,
+            "name": "mFundAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "209:27:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5739,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "209:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 5742,
+            "name": "mVestingTokensAddress",
+            "nodeType": "VariableDeclaration",
+            "scope": 5818,
+            "src": "242:36:20",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 5741,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "242:7:20",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5749,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "isVoteExist",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5745,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5744,
+                  "name": "_votingAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5749,
+                  "src": "310:22:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5743,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "310:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "309:24:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5748,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5747,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5749,
+                  "src": "354:4:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5746,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "354:4:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "353:6:20"
+            },
+            "scope": 5818,
+            "src": "289:71:20",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5756,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "newTapVoting",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5752,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5751,
+                  "name": "_votingName",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5756,
+                  "src": "387:18:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5750,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "387:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "386:20:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5755,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5754,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5756,
+                  "src": "422:7:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5753,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "422:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "421:9:20"
+            },
+            "scope": 5818,
+            "src": "365:66:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5763,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "newRefundVoting",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5759,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5758,
+                  "name": "_votingName",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5763,
+                  "src": "461:18:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5757,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "461:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "460:20:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5762,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5761,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5763,
+                  "src": "496:7:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5760,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "496:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "495:9:20"
+            },
+            "scope": 5818,
+            "src": "436:69:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5772,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "destroyVoting",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5768,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5765,
+                  "name": "_vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5772,
+                  "src": "533:21:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5764,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "533:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5767,
+                  "name": "_memo",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5772,
+                  "src": "556:12:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5766,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "556:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "532:37:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5771,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5770,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5772,
+                  "src": "585:4:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5769,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "585:4:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "584:6:20"
+            },
+            "scope": 5818,
+            "src": "510:81:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5777,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "refreshRefundVoting",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5773,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "624:2:20"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 5776,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5775,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5777,
+                  "src": "642:4:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5774,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "642:4:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "641:6:20"
+            },
+            "scope": 5818,
+            "src": "596:52:20",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 5787,
+            "name": "CreateTapVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 5786,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5779,
+                  "indexed": true,
+                  "name": "vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5787,
+                  "src": "691:28:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5778,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "691:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5781,
+                  "indexed": true,
+                  "name": "type_",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5787,
+                  "src": "721:23:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                    "typeString": "enum IVotingFactory.VOTE_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 5780,
+                    "name": "VOTE_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 5732,
+                    "src": "721:9:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                      "typeString": "enum IVotingFactory.VOTE_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5783,
+                  "indexed": true,
+                  "name": "round",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5787,
+                  "src": "746:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 5782,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "746:5:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5785,
+                  "indexed": false,
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5787,
+                  "src": "767:11:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5784,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "767:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "690:89:20"
+            },
+            "src": "671:109:20"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 5797,
+            "name": "CreateRefundVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 5796,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5789,
+                  "indexed": true,
+                  "name": "vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5797,
+                  "src": "808:28:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5788,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "808:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5791,
+                  "indexed": true,
+                  "name": "type_",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5797,
+                  "src": "838:23:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                    "typeString": "enum IVotingFactory.VOTE_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 5790,
+                    "name": "VOTE_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 5732,
+                    "src": "838:9:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                      "typeString": "enum IVotingFactory.VOTE_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5793,
+                  "indexed": true,
+                  "name": "round",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5797,
+                  "src": "863:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 5792,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "863:5:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5795,
+                  "indexed": false,
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5797,
+                  "src": "884:11:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5794,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "884:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "807:89:20"
+            },
+            "src": "785:112:20"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 5807,
+            "name": "DiscardTapVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 5806,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5799,
+                  "indexed": true,
+                  "name": "vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5807,
+                  "src": "923:28:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5798,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "923:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5801,
+                  "indexed": true,
+                  "name": "type_",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5807,
+                  "src": "953:23:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                    "typeString": "enum IVotingFactory.VOTE_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 5800,
+                    "name": "VOTE_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 5732,
+                    "src": "953:9:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                      "typeString": "enum IVotingFactory.VOTE_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5803,
+                  "indexed": true,
+                  "name": "round",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5807,
+                  "src": "978:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 5802,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "978:5:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5805,
+                  "indexed": false,
+                  "name": "memo",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5807,
+                  "src": "999:11:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5804,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "999:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "922:89:20"
+            },
+            "src": "902:110:20"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 5817,
+            "name": "DiscardRefundVote",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 5816,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5809,
+                  "indexed": true,
+                  "name": "vote_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5817,
+                  "src": "1041:28:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5808,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1041:7:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5811,
+                  "indexed": true,
+                  "name": "type_",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5817,
+                  "src": "1071:23:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                    "typeString": "enum IVotingFactory.VOTE_TYPE"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 5810,
+                    "name": "VOTE_TYPE",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 5732,
+                    "src": "1071:9:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_VOTE_TYPE_$5732",
+                      "typeString": "enum IVotingFactory.VOTE_TYPE"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5813,
+                  "indexed": true,
+                  "name": "round",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5817,
+                  "src": "1096:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 5812,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1096:5:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5815,
+                  "indexed": false,
+                  "name": "memo",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5817,
+                  "src": "1117:11:20",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 5814,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1117:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1040:89:20"
+            },
+            "src": "1017:113:20"
+          }
+        ],
+        "scope": 5819,
+        "src": "26:1106:20"
+      }
+    ],
+    "src": "0:1133:20"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.23+commit.124ca40d.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-05-22T12:40:15.271Z"
+}
